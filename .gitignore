@@ -85,3 +85,6 @@ x64/Debug/glewinfo.exe
 x64/Debug/glew32.dll
 x64/Debug/freeglut.dll
 .vs/Project1/v14/.suo
+Project1.VC.VC.opendb
+Project1/x64/Debug/ClassBinaryFile.obj
+Project1/x64/Debug/ClassBinaryInt.obj

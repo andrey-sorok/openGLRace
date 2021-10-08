@@ -79,6 +79,10 @@ void CMouse::MouseClick(int button, int state, int x, int y, bool& InIsMouseMove
 					{
 						pConditions->SetCurFigure(curFigure);
 					}
+					else if (m_pScene2D->ChecClickSaveAndExit(p.x, p.y))
+					{
+						break;
+					}
 					else
 					{
 						CColor3D CurColor = m_pScene2D->GetClickColor(x, y);

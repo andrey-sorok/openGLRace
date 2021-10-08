@@ -70,6 +70,8 @@ std::vector<std::shared_ptr<CFigureBase>> CScene2D::GetLeftSideBarObj()
 	auto pLine11 = std::make_shared<CLine2D>(CPoint2D(0, 500), CPoint2D(100, 500), color);
 	m_LeftSideBarObj.emplace_back(pLine11);
 
+
+
 	return m_LeftSideBarObj;
 }
 
@@ -152,6 +154,17 @@ EFigure CScene2D::GetFigureClick(int InX, int InY)
 	}
 
 	return fNone;
+}
+
+bool CScene2D::ChecClickSaveAndExit(int InX, int InY)
+{
+	if ((InX > 0) && (InX < 100)
+		&& (InY > 450) && (InY < 500))
+	{
+		return true;
+	}
+
+	return false;
 }
 
 CColor3D CScene2D::GetClickColor(int InX, int InY)

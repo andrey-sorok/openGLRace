@@ -125,6 +125,10 @@ void C2DRender::DrawRedactComponents()
 		Draw2DOject(pFBase);
 	}
 
+	renderSpacedBitmapString(25, 465, 10, GLUT_BITMAP_TIMES_ROMAN_10, "Save");
+	renderSpacedBitmapString(30, 476, 10, GLUT_BITMAP_TIMES_ROMAN_10, "and");
+	renderSpacedBitmapString(25, 490, 10, GLUT_BITMAP_TIMES_ROMAN_10, "Exit");
+	
 	//Cur Figure
 	auto pCoditions = pMNGFigure->GetConditions();
 	EFigure CurFigure = pCoditions->GetCurFigure();

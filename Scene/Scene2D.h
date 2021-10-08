@@ -19,7 +19,6 @@ private:
 
 	std::vector<std::shared_ptr<CFigureBase>> m_StartMenuObj;
 
-
 	std::vector<std::shared_ptr<CFigureBase>> GetLeftSideBarObj();
 
 	std::vector<std::shared_ptr<CFigureBase>> GetStartMenObj();
@@ -35,6 +34,8 @@ public:
 	bool IsLeftSideBarClick(int InX, int InY);
 
 	EFigure GetFigureClick(int InX, int InY);
+
+	bool ChecClickSaveAndExit(int InX, int InY);
 
 	CColor3D GetClickColor(int InX, int InY);
 
