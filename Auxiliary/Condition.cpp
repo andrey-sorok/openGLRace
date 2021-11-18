@@ -14,6 +14,10 @@ CCondition::CCondition()
 
 	m_MouseState = 0;
 	m_MouseButton = 0;
+
+	m_CarsFolder = "";
+
+	m_NumCars = 0;
 }
 
 

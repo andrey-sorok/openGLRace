@@ -57,24 +57,24 @@ void CKeyBoard::KeyStroke(unsigned char key, int x, int y)
 {
 	switch (key)
 	{
-	case 'q': // Exit
-			  //exit(0);
-		break;
-	case 'n': // New game
-			  //init();
-		break;
-	case 'h':
-		break;
-	case 27: // Esc button
-			 //exit(0);
-		break;
-	case 127: // Esc button
-	{
-		pMNGFigure->RemoveAllSelectFigures(pMNGFigure->GetObjects());
-		break;
-	}
-	default:
-		break;
+		case 'q': // Exit
+				  //exit(0);
+			break;
+		case 'n': // New game
+				  //init();
+			break;
+		case 'h':
+			break;
+		case 27: // Esc button
+				 //exit(0);
+			break;
+		case 127: // Delete button
+		{
+			pMNGFigure->RemoveAllSelectFigures(pMNGFigure->GetObjects());
+			break;
+		}
+		default:
+			break;
 	}
 
 }

@@ -27,9 +27,11 @@ public:
 
 	CTriangle2D(const int inCnterX, const int inCnterY);
 	CTriangle2D(const int inCnterX, const int inCnterY, CColor3D inColor);
+	CTriangle2D(CPoint2D inP1, CPoint2D inP2, CPoint2D inP3, CColor3D inColor);
+
 
 	void ChangePoints(CPoint2D inP1, CPoint2D inP2, CPoint2D inP3);
-	CTriangle2D(CPoint2D inP1, CPoint2D inP2, CPoint2D inP3, CColor3D inColor);
+	
 	void SetDelta(const int inDeltaX, const int inDeltaY);
 
 	bool SetNewScale(bool IsUp);

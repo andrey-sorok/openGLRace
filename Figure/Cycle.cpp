@@ -150,6 +150,24 @@ bool CCycle::CheckInWindow(int InCondition, bool IsUp, CPoint2D InCenterXY, int 
 	return false;
 }
 
+std::list<CPoint2D*> CCycle::GetPoints()
+{
+	std::list<CPoint2D*> rtnList;
+
+	double r = m_Radius;
+	for (int ii = 0; ii < m_NumSegments; ii++)
+	{
+		float theta = 2.0f * 3.1415926f * float(ii) / float(m_NumSegments);//get the current angle 
+		float x = r * cosf(theta);//calculate the x component 
+		float y = r * sinf(theta);//calculate the y component 
+
+		CPoint2D * p = new CPoint2D(x + m_Center.x, y + m_Center.y);
+		rtnList.push_back(p);
+	}
+
+	return rtnList;
+}
+
 void CCycle::SetDelta(const int inDeltaX, const int inDeltaY)
 {
 	m_Center.x += inDeltaX;

@@ -20,7 +20,6 @@ private:
 	double m_Scale;
 
 protected:
-	std::pair<CPoint2D, CPoint2D> GetP2P4(CPoint2D inP1, CPoint2D inP3);
 
 public:
 
@@ -32,6 +31,10 @@ public:
 	CRect2D(int x, int y, const float inDelta);
 	//__
 	~CRect2D();
+
+	//__
+	std::pair<CPoint2D, CPoint2D> GetP2P4(CPoint2D inP1, CPoint2D inP3);
+	//__
 
 	void ChangePoints(CPoint2D inP1, CPoint2D inP3);
 	void ChangePoints(float inDeltaX, float inDeltaY);

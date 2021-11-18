@@ -16,6 +16,7 @@ public:
 	virtual ~CFigureBase();
 
 	EFigure GetType() { return m_fType; };
+	void SetType(EFigure inType) { m_fType = inType; };
 
 	void SetColor(CColor3D inColor);
 	CColor3D * GetColor();

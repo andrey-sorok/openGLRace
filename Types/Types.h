@@ -21,4 +21,6 @@ enum GameState
 	Choice			//4
 };
 
+enum fileAccess { in, out, inout };
+
 #endif //

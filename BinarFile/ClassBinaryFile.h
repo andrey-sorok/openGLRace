@@ -6,11 +6,12 @@
 
 using namespace std;
 
-enum fileAccess { in, out, inout };
-
 class ClassBinaryFile
 {
 public:
+
+	enum fileAccess { in, out, inout };
+
 	ClassBinaryFile();
 
 	void strFileOpen(string fPath, fileAccess access);

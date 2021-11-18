@@ -1,6 +1,8 @@
 #ifndef __2DRENDER_
 #define __2DRENDER_
 
+#include <vector>
+
 #include "OpenGLRender.h"
 #include "ManagerFigure.h"
 
@@ -27,6 +29,7 @@ private:
 
 	void renderSpacedBitmapString(float x, float y, int spacing, void *font, char *string);
 
+
 public:
 	C2DRender();
 	~C2DRender();
@@ -36,6 +39,7 @@ public:
 	std::shared_ptr<CScene2D> GetScene2D() { return m_pScene2D; };
 	
 	void Draw(GameState InGameState);
+	void DrawExistingModels();
 	void DrawRedactComponents();
 	void DrawStartMenu();
 

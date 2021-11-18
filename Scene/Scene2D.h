@@ -12,6 +12,8 @@ class CColor3D;
 
 class CPoint3D;
 
+class C2DModel;
+
 class CScene2D
 {
 private:
@@ -23,9 +25,22 @@ private:
 
 	std::vector<std::shared_ptr<CFigureBase>> GetStartMenObj();
 
+	std::vector<std::vector<std::shared_ptr<CFigureBase>>> vCarsModels;
+
+	//__
+	std::vector<std::shared_ptr<C2DModel>> vModel;
+	//__
 public:
 	CScene2D();
 	~CScene2D();
+
+	//__
+	void AddModel(std::shared_ptr<C2DModel> InrModel);
+	std::vector<std::shared_ptr<C2DModel>> GetModel() { return vModel; };
+	//__
+
+	void AddCarModels(std::vector<std::shared_ptr<CFigureBase>> InCarModels);
+	std::vector<std::vector<std::shared_ptr<CFigureBase>>> GetCarModels() { return vCarsModels; };
 
 	std::vector<std::shared_ptr<CFigureBase>> GetDrawRedactObjCondition();
 	

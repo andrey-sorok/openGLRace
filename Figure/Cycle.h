@@ -1,10 +1,13 @@
-#pragma once
+#ifndef __CYCLE_
+#define __CYCLE_
+
 #include "FigureBase.h"
 
 #include "Point2D.h"
 
-class CCycle :
-	public CFigureBase
+#include <list>
+
+class CCycle : 	public CFigureBase
 {
 private:
 
@@ -27,6 +30,8 @@ public:
 	int GetNumSegments() { return m_NumSegments; };
 	double GetRadius() { return m_Radius; };
 
+	std::list<CPoint2D*> GetPoints();
+
 	void SetDelta(const int inDeltaX, const int inDeltaY);
 	void SetNewCoord(const int inX, const int inY);
 	bool SetNewScale(bool IsUp);
@@ -39,3 +44,4 @@ public:
 
 };
 
+#endif //__CYCLE_

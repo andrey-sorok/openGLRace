@@ -8,6 +8,8 @@
 #include "Triangle2D.h"
 #include "Cycle.h"
 
+#include "C2DModel.h"
+
 #include <memory>
 
 std::vector<std::shared_ptr<CFigureBase>> CScene2D::GetLeftSideBarObj()
@@ -104,6 +106,16 @@ CScene2D::CScene2D()
 
 CScene2D::~CScene2D()
 {
+}
+
+void CScene2D::AddModel(std::shared_ptr<C2DModel> InrModel)
+{
+	vModel.emplace_back(InrModel);
+}
+
+void CScene2D::AddCarModels(std::vector<std::shared_ptr<CFigureBase>> InCarModels)
+{
+	vCarsModels.emplace_back(InCarModels);
 }
 
 std::vector<std::shared_ptr<CFigureBase>> CScene2D::GetDrawRedactObjCondition()

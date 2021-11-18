@@ -140,6 +140,9 @@ int main(int argc, char* argv[])
 	pCondition->SetCurGameState(StartMenu);
 	pCondition->SetIsMouseMove(false);
 
+	std::string CarsFolder = "Cars";
+	pCondition->SetCarsFolder(CarsFolder);
+
 	glutInit(&argc, argv);  // Initialize GLUT
 
 	pFMGManager->SetConditions(pCondition);
@@ -150,7 +153,6 @@ int main(int argc, char* argv[])
 	
 	pMouse->SetFigureManager(pFMGManager);
 	pMouse->SetScene2D(p2DRender->GetScene2D());
-	//pMouse->SetConditions(pCondition);
 
 	pOpenGlRender->InitWindowParams(WINWIDTH, WINHEIGHT, 0, 0);
 

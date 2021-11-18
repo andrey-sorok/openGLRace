@@ -14,6 +14,7 @@ class CManagerFigure
 {
 private:
 	unsigned int m_NumObjects;
+
 protected:
 	std::vector<CFigureBase*> m_Ojects2D;
 	std::unique_ptr<CSelector> m_Selector;
@@ -36,6 +37,8 @@ public:
 	std::vector<CFigureBase*>& GetObjects() { return m_Ojects2D; };
 	bool AddObject2D(CFigureBase* inFigure);
 	CFigureBase * GetObject2D(int Ind);
+
+	std::vector<CFigureBase*> GetAll2DObjects() { return m_Ojects2D;	};
 
 	void SetIndObjecyt2D(CFigureBase * inFigure);
 

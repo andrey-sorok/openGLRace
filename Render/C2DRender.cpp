@@ -13,11 +13,17 @@
 
 #include "Scene2D.h"
 
+#include "Condition.h"
+#include "BinFile.h"
+
+//__
+#include "C2DModel.h"
+//__
+
 #include <gl\freeglut.h>
 
 #include <math.h>
 #include <memory>
-#include <vector>
 
 
 void C2DRender::DrawCurrenFigure(EFigure InCurFigure, CColor3D InColor)
@@ -104,6 +110,12 @@ void C2DRender::Draw(GameState InGameState)
 			break;
 		};
 
+		case Choice:
+		{
+			DrawExistingModels();
+			break;
+		};
+
 		case Game:
 		{
 			break;
@@ -112,6 +124,92 @@ void C2DRender::Draw(GameState InGameState)
 		default:
 			break;
 	}
+}
+
+void C2DRender::DrawExistingModels()
+{
+	std::vector<std::vector<std::shared_ptr<CFigureBase>>> vCarsModels = m_pScene2D->GetCarModels();
+
+	int NumModels = vCarsModels.size();
+
+	std::vector<std::vector<std::pair<CPoint2D, CPoint2D>>> vPointGrid = pMNGFigure->GetConditions()->GetOutModelsGreed();
+
+	for (int irow = 0; irow < vPointGrid.size(); ++irow)
+	{
+		for (int icol = 0; icol < vPointGrid[irow].size(); ++icol)
+		{
+			auto pRect = std::make_unique<CRect2D>();
+			
+			auto P2P4 = pRect->GetP2P4(vPointGrid[irow][icol].first, vPointGrid[irow][icol].second);
+			//auto pLine1 = std::make_shared<CLine2D>(vPointGrid[irow][icol].first, P2P4.first, CColor3D(0, 255, 0));
+			//Draw2DOject(dynamic_cast<CFigureBase*>(pLine1.get()));
+
+			auto pLine2 = std::make_shared<CLine2D>(P2P4.first, vPointGrid[irow][icol].second, CColor3D(0, 255, 0));
+			Draw2DOject(dynamic_cast<CFigureBase*>(pLine2.get()));
+
+			auto pLine3 = std::make_shared<CLine2D>(vPointGrid[irow][icol].second, P2P4.second, CColor3D(0, 255, 0));
+			Draw2DOject(dynamic_cast<CFigureBase*>(pLine3.get()));
+
+			//auto pLine4 = std::make_shared<CLine2D>(P2P4.second, vPointGrid[irow][icol].first, CColor3D(0, 255, 0));
+			//Draw2DOject(dynamic_cast<CFigureBase*>(pLine4.get()));
+		}
+	}
+
+	/*std::vector<std::shared_ptr<CFigureBase>> vFirstModel = vCarsModels[0];
+	std::vector<std::shared_ptr<CFigureBase>> tmpVec;
+	tmpVec.push_back(vFirstModel[1]);
+
+	auto pC2DModel1 = std::make_shared<C2DModel>(vFirstModel);*/
+	//std::list<std::shared_ptr<CFigureBase>> lstFigure =  pC2DModel1->GetObjects2D();
+	//auto Pair = pC2DModel1->GetVertexArr(lstFigure.front());
+	
+	/*std::list<std::shared_ptr<CFigureBase>> lstFigure;
+	lstFigure.push_back(vFirstModel[1]);
+	lstFigure.push_back(vFirstModel[2]);
+	
+	auto Pair = pC2DModel1->GetAllVrtAndColor(lstFigure);*/
+	//auto pModel = m_pScene2D->GetModel();
+
+	//std::list <std::shared_ptr<C2DModel>> pM;
+	//pM.emplace_back(pModel[0]);
+
+	/*int size = 0;
+	auto Pair = pModel[0]->GetAllVrtAndColor(pModel[0]->GetObjects2D(), size);
+	
+	
+	glPushMatrix();
+	glMatrixMode(GL_MODELVIEW);
+
+	glEnableClientState(GL_VERTEX_ARRAY);
+	glEnableClientState(GL_COLOR_ARRAY);
+
+	glVertexPointer(2, GL_FLOAT, 0, Pair.first);
+	glColorPointer(3, GL_FLOAT, 0, Pair.second);*/
+	
+	//glRotatef(-0.05, 0, 0, 100);
+	//glTranslatef(-0.5, 0, 0);
+
+	//glScalef(0.005, 00, 0);
+
+	//glDrawArrays(GL_POLYGON, 0, size);
+	//glTranslatef(-60, 0, 0);
+	//glRotatef(45, 1, 0, 0);
+
+	/*glDisableClientState(GL_COLOR_ARRAY);
+	glDisableClientState(GL_VERTEX_ARRAY);
+
+	glPopMatrix();*/
+
+	for ( int iModel = 0; iModel < NumModels; ++iModel )
+	{
+		
+		for (int iFigure = 0; iFigure < vCarsModels[iModel].size(); ++iFigure)
+		{
+			auto pFBase = vCarsModels[iModel][iFigure].get();
+
+			Draw2DOject(pFBase);
+		}
+	}	
 }
 
 void C2DRender::DrawRedactComponents()
@@ -170,7 +268,7 @@ void C2DRender::Draw2DOject(CFigureBase * pInFigure)
 {
 	switch (pInFigure->GetType())
 	{
-	case 1:
+	case 1: //Line
 	{
 		auto InLine = dynamic_cast<CLine2D*>(pInFigure);
 		Draw2DLine(InLine);
@@ -182,13 +280,13 @@ void C2DRender::Draw2DOject(CFigureBase * pInFigure)
 		DrawTriangle2D(InTriangle);
 		break;
 	}
-	case 3://Rectangle
+	case 3: //Rectangle
 	{
 		auto InRect = dynamic_cast<CRect2D*>(pInFigure);
 		DrawRect2D(InRect);
 		break;
 	}
-	case 4://Cycle
+	case 4: //Cycle
 	{
 		auto InCycle = dynamic_cast<CCycle*>(pInFigure);
 		DrawCircle(InCycle);

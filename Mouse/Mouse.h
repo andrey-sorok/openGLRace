@@ -7,7 +7,6 @@
 
 class CManagerFigure;
 class CScene2D;
-class CCondition;
 
 class CPoint3D;
 

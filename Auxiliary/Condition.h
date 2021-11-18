@@ -4,6 +4,10 @@
 #include "Types.h"
 
 #include "Color3D.h"
+#include "Point2D.h"
+
+#include <string>
+#include <vector>
 
 class CCondition
 {
@@ -20,6 +24,13 @@ private:
 
 	int m_MouseState;
 	int m_MouseButton;
+
+	std::string m_CarsFolder;
+	int m_NumCars;
+
+	std::vector<std::string> m_Paths2Models;
+
+	std::vector<std::vector<std::pair<CPoint2D, CPoint2D>>> vOutModelsGreed;
 
 public:
 	CCondition();
@@ -48,6 +59,18 @@ public:
 	
 	void SetMouseButtonState(int state) { m_MouseButton = state; };
 	int GetMouseButtonState() { return m_MouseButton; };
+
+	void SetCarsFolder(std::string InCarFolder) { m_CarsFolder = InCarFolder; };
+	std::string GetCarsFolder() { return m_CarsFolder; };
+
+	void SetNumCars(int InNumCars) { m_NumCars = InNumCars; };
+	int& GetNumCars() { return m_NumCars; };
+
+	void SetPaths2Models(const std::vector<std::string> InPath2ModelsFiles) { m_Paths2Models = InPath2ModelsFiles; };
+	std::vector<std::string> GetPaths2Models() { return m_Paths2Models; };
+
+	void SetOutModelsGreed(std::vector<std::vector<std::pair<CPoint2D, CPoint2D>>> InVector) { vOutModelsGreed = InVector; };
+	std::vector<std::vector<std::pair<CPoint2D, CPoint2D>>> GetOutModelsGreed() { return vOutModelsGreed; };
 };
 
 #endif //__CONDITION_
