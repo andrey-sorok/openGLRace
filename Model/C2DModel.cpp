@@ -28,6 +28,11 @@ C2DModel::C2DModel(std::vector<std::shared_ptr<CFigureBase>> InFigureModel)
 	{
 		m_Objects2D.emplace_back(iFigure);
 	}
+
+	auto modelCenter = CalcCenterModel(m_Objects2D);
+
+	m_Center_X = modelCenter.first;
+	m_Center_Y = modelCenter.second;
 }
 
 void C2DModel::Add2Objects2D(std::shared_ptr<CFigureBase> InObj2D)
@@ -215,22 +220,94 @@ std::pair<void*, void*> C2DModel::GetAllVrtAndColor(std::list<std::shared_ptr<CF
 	return std::make_pair(Vertex, Color);
 }
 
-void C2DModel::Translate(double InX, double InY)
+std::pair<double, double> C2DModel::CalcCenterModel(std::list<std::shared_ptr<CFigureBase>>& ModelObjects2D)
 {
+	std::pair<CPoint2D, CPoint2D> rtnPair;
+
+	auto LMDGetMinMaxPoints = [](std::list<CPoint2D*> InPoints, std::pair<CPoint2D, CPoint2D> & MinMaxPoint)
+	{
+		//std::pair<CPoint2D, CPoint2D> rtnPair;
+
+		for (auto iPoint : InPoints)
+		{
+			//MIN
+			if (MinMaxPoint.first.x > iPoint->x)
+			{
+				MinMaxPoint.first.x = iPoint->x;
+			}
+			
+			if (MinMaxPoint.first.y > iPoint->y)
+			{
+				MinMaxPoint.first.y = iPoint->y;
+			}
+			//MAX
+			if (MinMaxPoint.second.x < iPoint->x)
+			{
+				MinMaxPoint.second.x = iPoint->x;
+			}
+
+			if (MinMaxPoint.second.y < iPoint->y)
+			{
+				MinMaxPoint.second.y = iPoint->y;
+			}
+
+		}
+
+		return true;
+	};
+
+	std::pair<CPoint2D, CPoint2D> PairMinMax;
+	CPoint2D minXY(static_cast<float>(INT_MAX), static_cast<float>(INT_MAX));
+	PairMinMax.first = minXY;
+	CPoint2D maxXY(0.00, 0.00);
+	PairMinMax.second = maxXY;
+
+	for (auto pFigure : ModelObjects2D)
+	{
+		int fType = pFigure->GetType();
+		
+		switch (fType)
+		{
+
+			case 1:
+			{
+				/*auto InLine = dynamic_cast<CLine2D*>(InCurFigure);
+				Draw2DLine(InLine);*/
+				break;
+			}
+			case 2: //Triangle
+			{
+				auto pTrian = dynamic_cast<CTriangle2D*>(pFigure.get());
+				std::list<CPoint2D*> lstPoints = pTrian->GetPoints();
+				LMDGetMinMaxPoints(lstPoints, PairMinMax);
+				break;
+			}
+			case 3://Rectangle
+			{
+				auto pRect = dynamic_cast<CRect2D*>(pFigure.get());
+				std::list<CPoint2D*> lstPoints = pRect->GetPoints();
+				LMDGetMinMaxPoints(lstPoints, PairMinMax);
+				break;
+			}
+			case 4://Cycle
+			{
+				auto pCycle = dynamic_cast<CCycle*>(pFigure.get());
+				std::list<CPoint2D*> lstPoints = pCycle->GetPoints();
+				LMDGetMinMaxPoints(lstPoints, PairMinMax);
+				break;
+			}
+			default:
+			{
+				break;
+			}
+			}
+		
+	}
+
+	auto PairCenter = std::make_pair(0.00, 0.00);
+
+	PairCenter.first = (PairMinMax.first.x + PairMinMax.second.x) / 2;
+	PairCenter.second = (PairMinMax.first.y + PairMinMax.second.y) / 2;
+	
+	return PairCenter;
 }
-
-//
-//void C2DModel::Rotate(double Angle)
-//{
-//}
-//
-//void C2DModel::Translate(double InX, double InY)
-//{
-//}
-
-//std::pair<double, double> C2DModel::GetCenterModel()
-//{
-//	auto Pair = std::make_pair(0.00, 0.00);
-//	
-//	return Pair;
-//}

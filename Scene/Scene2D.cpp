@@ -1,6 +1,7 @@
 #include "Scene2D.h"
 
 #include "Point3D.h"
+#include "Point2D.h"
 
 #include "FigureBase.h"
 #include "Line2D.h"
@@ -110,7 +111,7 @@ CScene2D::~CScene2D()
 
 void CScene2D::AddModel(std::shared_ptr<C2DModel> InrModel)
 {
-	vModel.emplace_back(InrModel);
+	vModels.emplace_back(InrModel);
 }
 
 void CScene2D::AddCarModels(std::vector<std::shared_ptr<CFigureBase>> InCarModels)
@@ -229,4 +230,31 @@ GameState CScene2D::CheckStartMenuClick(CPoint3D InPointClick)
 	}
 
 	return StartMenu;
+}
+
+std::shared_ptr<C2DModel> CScene2D::GetChoceModel(std::vector<std::vector<std::pair<CPoint2D, CPoint2D>>> vPointGrid, CPoint3D p)
+{
+	int modelNum = -1;
+
+	for (int i = 0; i < vPointGrid.size(); ++i)
+	{
+		for (int j = 0; j < vPointGrid[i].size(); ++j)
+		{
+			auto BegEndpoints = vPointGrid[i][j];
+			if (((p.x > BegEndpoints.first.x) && (p.x < BegEndpoints.second.x))
+				&& (p.y > BegEndpoints.first.y) && (p.y < BegEndpoints.second.y))
+			{
+				modelNum = ((1 * i) + i) + (i + j);
+			}
+		}
+	}
+	
+	std::shared_ptr<C2DModel> pModel = nullptr;
+	if (modelNum < vModels.size())
+	{
+		pModel = vModels[modelNum];
+	}
+
+	
+	return pModel;
 }

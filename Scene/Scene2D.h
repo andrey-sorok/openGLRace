@@ -11,6 +11,7 @@ class CFigureBase;
 class CColor3D;
 
 class CPoint3D;
+class CPoint2D;
 
 class C2DModel;
 
@@ -28,15 +29,16 @@ private:
 	std::vector<std::vector<std::shared_ptr<CFigureBase>>> vCarsModels;
 
 	//__
-	std::vector<std::shared_ptr<C2DModel>> vModel;
+	std::vector<std::shared_ptr<C2DModel>> vModels;
 	//__
+
 public:
 	CScene2D();
 	~CScene2D();
 
 	//__
 	void AddModel(std::shared_ptr<C2DModel> InrModel);
-	std::vector<std::shared_ptr<C2DModel>> GetModel() { return vModel; };
+	std::vector<std::shared_ptr<C2DModel>> GetModels() { return vModels; };
 	//__
 
 	void AddCarModels(std::vector<std::shared_ptr<CFigureBase>> InCarModels);
@@ -55,6 +57,9 @@ public:
 	CColor3D GetClickColor(int InX, int InY);
 
 	GameState CheckStartMenuClick(CPoint3D InPointClick);
+
+	std::shared_ptr<C2DModel> GetChoceModel(std::vector<std::vector<std::pair<CPoint2D, CPoint2D>>> vPointGrid, CPoint3D p);
+
 };
 
 #endif //__SCENE2D_

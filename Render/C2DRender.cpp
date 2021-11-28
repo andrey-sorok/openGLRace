@@ -130,7 +130,13 @@ void C2DRender::DrawExistingModels()
 {
 	std::vector<std::vector<std::shared_ptr<CFigureBase>>> vCarsModels = m_pScene2D->GetCarModels();
 
-	int NumModels = vCarsModels.size();
+	std::shared_ptr<CScene2D> pScene2D = GetScene2D();
+
+	//vector of all models
+	std::vector<std::shared_ptr<C2DModel>> vModels2D = m_pScene2D->GetModels();
+
+	//int NumModels = vCarsModels.size();
+	int NumModels = vModels2D.size();
 
 	std::vector<std::vector<std::pair<CPoint2D, CPoint2D>>> vPointGrid = pMNGFigure->GetConditions()->GetOutModelsGreed();
 
@@ -155,60 +161,53 @@ void C2DRender::DrawExistingModels()
 		}
 	}
 
-	/*std::vector<std::shared_ptr<CFigureBase>> vFirstModel = vCarsModels[0];
-	std::vector<std::shared_ptr<CFigureBase>> tmpVec;
-	tmpVec.push_back(vFirstModel[1]);
+	std::vector<CPoint2D> vCentersGrids;
+	for (auto iGrid : vPointGrid)
+	{
+		for (int iGridRect = 0; iGridRect < iGrid.size(); ++iGridRect)
+		{
+			
+			int centerX = (iGrid[iGridRect].second.x + iGrid[iGridRect].first.x) /2;
+			int centerY = (iGrid[iGridRect].second.y + iGrid[iGridRect].first.y) /2;
 
-	auto pC2DModel1 = std::make_shared<C2DModel>(vFirstModel);*/
-	//std::list<std::shared_ptr<CFigureBase>> lstFigure =  pC2DModel1->GetObjects2D();
-	//auto Pair = pC2DModel1->GetVertexArr(lstFigure.front());
-	
-	/*std::list<std::shared_ptr<CFigureBase>> lstFigure;
-	lstFigure.push_back(vFirstModel[1]);
-	lstFigure.push_back(vFirstModel[2]);
-	
-	auto Pair = pC2DModel1->GetAllVrtAndColor(lstFigure);*/
-	//auto pModel = m_pScene2D->GetModel();
-
-	//std::list <std::shared_ptr<C2DModel>> pM;
-	//pM.emplace_back(pModel[0]);
-
-	/*int size = 0;
-	auto Pair = pModel[0]->GetAllVrtAndColor(pModel[0]->GetObjects2D(), size);
-	
-	
-	glPushMatrix();
-	glMatrixMode(GL_MODELVIEW);
-
-	glEnableClientState(GL_VERTEX_ARRAY);
-	glEnableClientState(GL_COLOR_ARRAY);
-
-	glVertexPointer(2, GL_FLOAT, 0, Pair.first);
-	glColorPointer(3, GL_FLOAT, 0, Pair.second);*/
-	
-	//glRotatef(-0.05, 0, 0, 100);
-	//glTranslatef(-0.5, 0, 0);
-
-	//glScalef(0.005, 00, 0);
-
-	//glDrawArrays(GL_POLYGON, 0, size);
-	//glTranslatef(-60, 0, 0);
-	//glRotatef(45, 1, 0, 0);
-
-	/*glDisableClientState(GL_COLOR_ARRAY);
-	glDisableClientState(GL_VERTEX_ARRAY);
-
-	glPopMatrix();*/
+			CPoint2D p(centerX, centerY);
+			vCentersGrids.push_back(p);
+		}
+	}
 
 	for ( int iModel = 0; iModel < NumModels; ++iModel )
 	{
-		
-		for (int iFigure = 0; iFigure < vCarsModels[iModel].size(); ++iFigure)
-		{
-			auto pFBase = vCarsModels[iModel][iFigure].get();
+		C2DModel* CurModel = vModels2D[iModel].get();
+		std::list<std::shared_ptr<CFigureBase>> lstModelObjects = CurModel->GetObjects2D();
+		auto modelCenter = CurModel->GetCenter();
 
-			Draw2DOject(pFBase);
+		/*std::shared_ptr<CCondition> pConditions = pMNGFigure->GetConditions();
+		int width = pConditions->GetWINWIDTH();
+		int height = pConditions->GetWINHEIGHT() / 2;
+
+		auto dXdY = Get_dXdY(CPoint2D(width, height), CPoint2D(modelCenter.first, modelCenter.second));
+
+		int CenterX = modelCenter.first + dXdY.first;
+		int CenterY = modelCenter.second + dXdY.second;
+
+		float cX = pConditions->GetWINWIDTH() + dXdY.first;
+		float cY = pConditions->GetWINHEIGHT() - dXdY.second;*/
+		
+		glPushMatrix();
+		
+		//glTranslatef(modelCenter.first, modelCenter.second, 0);
+		glTranslatef(vCentersGrids[iModel].x, vCentersGrids[iModel].y, 0);
+		glRotatef(+90.00, 0, 0, 1);
+		glTranslatef(-modelCenter.first, -modelCenter.second, 0);
+
+		for (auto iFigure : lstModelObjects)// = 0; iFigure < lstModelObjects.size(); ++iFigure)
+		{	
+			//std::shared_ptr<CScene2D> pScene2D = GetScene2D();
+			auto pFBase = iFigure.get();
+			Draw2DOject(pFBase);		
 		}
+
+		glPopMatrix();
 	}	
 }
 

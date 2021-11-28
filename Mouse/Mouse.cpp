@@ -98,16 +98,12 @@ void CMouse::MouseClick(int button, int state, int x, int y, bool& InIsMouseMove
 						std::vector<std::vector<std::pair<CPoint2D, CPoint2D>>> vGred = pMMath->CreateOutGreed(NumModels, pConditions->GetWINWIDTH(), pConditions->GetWINHEIGHT());
 						pConditions->SetOutModelsGreed(vGred);
 					//__
-						//std::vector<std::shared_ptr<CFigureBase>> vFirstModel = m_pScene2D->GetCarModels()[0];
-						//	//vCarsModels[0];
-						//std::vector<std::shared_ptr<CFigureBase>> tmpVec;
-						//tmpVec.push_back(vFirstModel[1]);
-						//tmpVec.push_back(vFirstModel[2]);
-						//tmpVec.push_back(vFirstModel[3]);
-						//tmpVec.push_back(vFirstModel[4]);
-
-						//auto pC2DModel1 = std::make_shared<C2DModel>(tmpVec);
-						//m_pScene2D->AddModel(pC2DModel1);
+						for (int iModel = 0; iModel < NumModels; ++iModel)
+						{
+							std::vector<std::shared_ptr<CFigureBase>> vFirstModel = m_pScene2D->GetCarModels()[iModel];
+							auto pC2DModel1 = std::make_shared<C2DModel>(vFirstModel);
+							m_pScene2D->AddModel(pC2DModel1);
+						}
 					//__
 					}
 
@@ -176,12 +172,20 @@ void CMouse::MouseClick(int button, int state, int x, int y, bool& InIsMouseMove
 					break;
 				}
 				case Game:
-					break;
-
-				case Choice:
 				{
 					int i = 0;
 					++i;
+					break;
+				}
+				case Choice:
+				{
+					auto pC2DGameModel = m_pScene2D->GetChoceModel(pConditions->GetOutModelsGreed(), p);
+					
+					if (pC2DGameModel)
+					{
+						pConditions->SetCurGameState(Game);
+					}
+					
 					break;
 				}
 					
