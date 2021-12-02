@@ -21,6 +21,20 @@ enum GameState
 	Choice			//4
 };
 
+enum TrackState
+{
+	fNoneTrack,		//0
+	fOne,			//1
+	fTwo,			//2
+	fThree			//3
+};
+
+enum EDirect
+{
+	fHorizontal,		//0
+	fVertical,			//1
+};
+
 enum fileAccess { in, out, inout };
 
 #endif //

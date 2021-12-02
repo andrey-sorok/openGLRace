@@ -73,6 +73,9 @@ std::vector<std::shared_ptr<CFigureBase>> CScene2D::GetLeftSideBarObj()
 	auto pLine11 = std::make_shared<CLine2D>(CPoint2D(0, 500), CPoint2D(100, 500), color);
 	m_LeftSideBarObj.emplace_back(pLine11);
 
+	auto pLine12 = std::make_shared<CLine2D>(CPoint2D(0, 550), CPoint2D(100, 550), color);
+	m_LeftSideBarObj.emplace_back(pLine12);
+
 
 
 	return m_LeftSideBarObj;
@@ -111,12 +114,19 @@ CScene2D::~CScene2D()
 
 void CScene2D::AddModel(std::shared_ptr<C2DModel> InrModel)
 {
-	vModels.emplace_back(InrModel);
+	int iP = m_vModels.size() - 1;
+	InrModel->SetiP(iP);
+	m_vModels.emplace_back(InrModel);
+}
+
+std::shared_ptr<C2DModel> CScene2D::GetModel(int InNumModel)
+{
+	return m_vModels[InNumModel];
 }
 
 void CScene2D::AddCarModels(std::vector<std::shared_ptr<CFigureBase>> InCarModels)
 {
-	vCarsModels.emplace_back(InCarModels);
+	m_vCarsModels.emplace_back(InCarModels);
 }
 
 std::vector<std::shared_ptr<CFigureBase>> CScene2D::GetDrawRedactObjCondition()
@@ -173,6 +183,17 @@ bool CScene2D::ChecClickSaveAndExit(int InX, int InY)
 {
 	if ((InX > 0) && (InX < 100)
 		&& (InY > 450) && (InY < 500))
+	{
+		return true;
+	}
+
+	return false;
+}
+
+bool CScene2D::ChecClickSave(int InX, int InY)
+{
+	if ((InX > 0) && (InX < 100)
+		&& (InY > 500) && (InY < 550))
 	{
 		return true;
 	}
@@ -250,9 +271,9 @@ std::shared_ptr<C2DModel> CScene2D::GetChoceModel(std::vector<std::vector<std::p
 	}
 	
 	std::shared_ptr<C2DModel> pModel = nullptr;
-	if (modelNum < vModels.size())
+	if (modelNum < m_vModels.size())
 	{
-		pModel = vModels[modelNum];
+		pModel = m_vModels[modelNum];
 	}
 
 	

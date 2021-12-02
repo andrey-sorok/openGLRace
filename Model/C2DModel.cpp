@@ -9,6 +9,7 @@
 #include "Cycle.h"
 
 #include "Color3D.h"
+#include "Point2D.h"
 
 //
 //C2DModel::C2DModel()
@@ -22,6 +23,12 @@ C2DModel::~C2DModel()
 
 C2DModel::C2DModel(std::vector<std::shared_ptr<CFigureBase>> InFigureModel)
 {
+	m_OffsetXY = new CPoint2D(0, 0);
+	m_MinXY = new CPoint2D(0, 0);
+	m_MaxXY = new CPoint2D(0, 0);
+
+	m_CenterXY = new CPoint2D(0, 0);
+
 	m_iP = 0;
 
 	for (auto iFigure : InFigureModel)
@@ -33,6 +40,10 @@ C2DModel::C2DModel(std::vector<std::shared_ptr<CFigureBase>> InFigureModel)
 
 	m_Center_X = modelCenter.first;
 	m_Center_Y = modelCenter.second;
+
+	m_CenterXY->x = modelCenter.first;
+	m_CenterXY->x = modelCenter.second;
+
 }
 
 void C2DModel::Add2Objects2D(std::shared_ptr<CFigureBase> InObj2D)
@@ -308,6 +319,54 @@ std::pair<double, double> C2DModel::CalcCenterModel(std::list<std::shared_ptr<CF
 
 	PairCenter.first = (PairMinMax.first.x + PairMinMax.second.x) / 2;
 	PairCenter.second = (PairMinMax.first.y + PairMinMax.second.y) / 2;
+
+	SetMinMaxRectXY(PairMinMax);
 	
 	return PairCenter;
+}
+
+void C2DModel::SetMinMaxRectXY(std::pair<CPoint2D, CPoint2D> MinMaxPoint)
+{
+	m_minX = MinMaxPoint.first.x;
+	m_minY = MinMaxPoint.first.y;
+
+	m_maxX = MinMaxPoint.second.x;
+	m_maxY = MinMaxPoint.second.y;
+
+	m_MinXY->x = MinMaxPoint.first.x;
+	m_MinXY->y = MinMaxPoint.first.y;
+	
+	m_MaxXY->y = MinMaxPoint.second.x;
+	m_MaxXY->x = MinMaxPoint.second.y;
+}
+
+std::pair<CPoint2D, CPoint2D> C2DModel::GetMinMaxRectXY()
+{
+	auto minXY = CPoint2D(m_minX, m_minY);
+	auto maxXY = CPoint2D(m_maxX, m_maxY);
+
+	return std::make_pair(minXY, maxXY);
+}
+
+void C2DModel::SetOffset(EDirect InDirect, float d)
+{
+	switch (InDirect)
+	{
+		case fHorizontal:
+		{
+			m_OffsetXY->x += d;
+
+			break;
+		}
+	
+		case fVertical:
+		{
+			m_OffsetXY->y += d;
+
+			break;
+		}
+	
+		default:
+			break;
+	}
 }

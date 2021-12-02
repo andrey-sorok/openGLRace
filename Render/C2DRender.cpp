@@ -24,6 +24,7 @@
 
 #include <math.h>
 #include <memory>
+#include <tuple>
 
 
 void C2DRender::DrawCurrenFigure(EFigure InCurFigure, CColor3D InColor)
@@ -118,6 +119,7 @@ void C2DRender::Draw(GameState InGameState)
 
 		case Game:
 		{
+			DrawMoveTrack1(fOne);
 			break;
 		};
 
@@ -135,7 +137,6 @@ void C2DRender::DrawExistingModels()
 	//vector of all models
 	std::vector<std::shared_ptr<C2DModel>> vModels2D = m_pScene2D->GetModels();
 
-	//int NumModels = vCarsModels.size();
 	int NumModels = vModels2D.size();
 
 	std::vector<std::vector<std::pair<CPoint2D, CPoint2D>>> vPointGrid = pMNGFigure->GetConditions()->GetOutModelsGreed();
@@ -161,7 +162,7 @@ void C2DRender::DrawExistingModels()
 		}
 	}
 
-	std::vector<CPoint2D> vCentersGrids;
+	/*std::vector<CPoint2D> vCentersGrids;
 	for (auto iGrid : vPointGrid)
 	{
 		for (int iGridRect = 0; iGridRect < iGrid.size(); ++iGridRect)
@@ -173,36 +174,60 @@ void C2DRender::DrawExistingModels()
 			CPoint2D p(centerX, centerY);
 			vCentersGrids.push_back(p);
 		}
+	}*/
+
+	std::vector<std::tuple<CPoint2D, CPoint2D, CPoint2D>> vCentersGrids;// 1 -center, 2 - Grid minXY, 3 -Grid maxXY
+	for (auto iGrid : vPointGrid)
+	{
+		for (int iGridRect = 0; iGridRect < iGrid.size(); ++iGridRect)
+		{
+
+			int centerX = (iGrid[iGridRect].second.x + iGrid[iGridRect].first.x) / 2;
+			int centerY = (iGrid[iGridRect].second.y + iGrid[iGridRect].first.y) / 2;
+			
+			CPoint2D minXY(iGrid[iGridRect].first.x, iGrid[iGridRect].first.y);
+			CPoint2D maxXY(iGrid[iGridRect].second.x, iGrid[iGridRect].second.y);
+
+			CPoint2D p(centerX, centerY);
+
+			auto t = std::make_tuple(p, minXY, maxXY);
+			vCentersGrids.push_back(t);
+		}
 	}
+
+	CPoint2D center, minXY, maxXY;
+	int first = 0;
+	auto Tup = std::tie(center, minXY, maxXY) = vCentersGrids[first];
+	float lengthX = maxXY.x - minXY.x;
+	float lengthY = maxXY.y - minXY.y;
 
 	for ( int iModel = 0; iModel < NumModels; ++iModel )
 	{
 		C2DModel* CurModel = vModels2D[iModel].get();
 		std::list<std::shared_ptr<CFigureBase>> lstModelObjects = CurModel->GetObjects2D();
 		auto modelCenter = CurModel->GetCenter();
+		
+		auto Tup = std::tie(center, minXY, maxXY) = vCentersGrids[iModel];
+		auto MinMaxXYRect = CurModel->GetMinMaxRectXY();
 
-		/*std::shared_ptr<CCondition> pConditions = pMNGFigure->GetConditions();
-		int width = pConditions->GetWINWIDTH();
-		int height = pConditions->GetWINHEIGHT() / 2;
+		float lengthModelX = MinMaxXYRect.second.x - MinMaxXYRect.first.x;
+		float lengthModelY = MinMaxXYRect.second.y - MinMaxXYRect.first.y;
 
-		auto dXdY = Get_dXdY(CPoint2D(width, height), CPoint2D(modelCenter.first, modelCenter.second));
-
-		int CenterX = modelCenter.first + dXdY.first;
-		int CenterY = modelCenter.second + dXdY.second;
-
-		float cX = pConditions->GetWINWIDTH() + dXdY.first;
-		float cY = pConditions->GetWINHEIGHT() - dXdY.second;*/
+		float scaleX = (lengthX / lengthModelX);
+		float scaleY = (lengthY / lengthModelY);
 		
 		glPushMatrix();
-		
-		//glTranslatef(modelCenter.first, modelCenter.second, 0);
-		glTranslatef(vCentersGrids[iModel].x, vCentersGrids[iModel].y, 0);
+				
+		glTranslatef( center.x, center.y, 0 );
+
+		glScalef(scaleX/2, scaleY/2, 0);
+
 		glRotatef(+90.00, 0, 0, 1);
 		glTranslatef(-modelCenter.first, -modelCenter.second, 0);
 
-		for (auto iFigure : lstModelObjects)// = 0; iFigure < lstModelObjects.size(); ++iFigure)
+
+		for (auto iFigure : lstModelObjects)
 		{	
-			//std::shared_ptr<CScene2D> pScene2D = GetScene2D();
 			auto pFBase = iFigure.get();
 			Draw2DOject(pFBase);		
 		}
@@ -225,6 +250,8 @@ void C2DRender::DrawRedactComponents()
 	renderSpacedBitmapString(25, 465, 10, GLUT_BITMAP_TIMES_ROMAN_10, "Save");
 	renderSpacedBitmapString(30, 476, 10, GLUT_BITMAP_TIMES_ROMAN_10, "and");
 	renderSpacedBitmapString(25, 490, 10, GLUT_BITMAP_TIMES_ROMAN_10, "Exit");
+
+	renderSpacedBitmapString(25, 525, 10, GLUT_BITMAP_TIMES_ROMAN_10, "Exit");
 	
 	//Cur Figure
 	auto pCoditions = pMNGFigure->GetConditions();
@@ -261,6 +288,40 @@ void C2DRender::DrawStartMenu()
 	renderSpacedBitmapString(750, 675, 10, GLUT_BITMAP_TIMES_ROMAN_24, "Create Car");
 
 	glutSwapBuffers();
+}
+
+void C2DRender::DrawMoveTrack1(TrackState InState)
+{
+	switch (InState)
+	{
+		case fNone: //0
+		{
+			break;
+		}
+		
+		case fOne: //0
+		{
+			DrawTrack1();
+
+			break;
+		}
+		
+		case fTwo: //0
+		{
+			break;
+		}
+		
+		case fThree: //0
+		{
+			break;
+		}
+	
+		default:
+		{
+			break;
+		}
+	}
+
 }
 
 void C2DRender::Draw2DOject(CFigureBase * pInFigure)
@@ -434,6 +495,43 @@ void C2DRender::DrawAxes(CLine2D* inAbciss, CLine2D* inOrdinate)
 	glEnd();
 }
 
+void C2DRender::KeyReDrowTrack(EDirect InDirec, int d)
+{
+	switch (InDirec)
+	{
+
+		/*case fHorizontal:
+		{
+			auto pCondition = pMNGFigure->GetConditions();
+			std::shared_ptr<C2DModel> pCurModel = m_pScene2D->GetCurModel();
+			std::list<std::shared_ptr<CFigureBase>> Objects2D = pCurModel->GetObjects2D();
+
+			glPushMatrix();
+
+			glTranslatef(100, 0, 0);
+
+			for (auto iObj : Objects2D)
+			{
+				Draw2DOject(iObj.get());
+			}
+
+			glPopMatrix();
+			
+			break;
+		}
+	
+		case fVertical:
+		{
+
+
+			break;
+		}
+	
+		default:
+			break;*/
+	}
+}
+
 void C2DRender::DrawCircle(CColor3D * inColor, float cx, float cy, float r, int num_segments)
 {
 	glColor3f(inColor->R, inColor->G, inColor->B);
@@ -447,4 +545,48 @@ void C2DRender::DrawCircle(CColor3D * inColor, float cx, float cy, float r, int 
 		glVertex2f(x +cx, y + cy);//output vertex 
 	}
 	glEnd();
+}
+
+void C2DRender::DrawTrack1()
+{
+
+	auto pCondition = pMNGFigure->GetConditions();
+	std::shared_ptr<C2DModel> pCurModel = m_pScene2D->GetCurModel();
+
+	std::list<std::shared_ptr<CFigureBase>> Objects2D = pCurModel->GetObjects2D();
+	
+	float lengthX = 100;
+	float lengthY = 100;
+	
+	CPoint2D BeginXY(lengthX, pCondition->GetWINHEIGHT() / 2);
+
+	auto centerXY = pCurModel->GetCenter();
+
+	auto MinMaxXYRect = pCurModel->GetMinMaxRectXY();
+
+	float lengthModelX = MinMaxXYRect.second.x - MinMaxXYRect.first.x;
+	float lengthModelY = MinMaxXYRect.second.y - MinMaxXYRect.first.y;
+
+	float scaleX = (lengthX / lengthModelX);
+	float scaleY = (lengthY / lengthModelY);
+	
+	CPoint2D* offseXY = pCurModel->GetOffset();
+
+	glPushMatrix();
+
+	glTranslatef(lengthX + offseXY->x, (pCondition->GetWINHEIGHT() / 2) + offseXY->y, 0);
+	
+	glScalef(scaleX, scaleY, 0);
+	
+	glRotatef(+90.00, 0, 0, 1);
+	glTranslatef(-centerXY.first, -centerXY.second, 0);
+
+	//glScalef(scaleX / 2, scaleY / 2, 0);
+
+	for (auto iObj : Objects2D)
+	{	
+		Draw2DOject(iObj.get());	
+	}
+
+	glPopMatrix();
 }

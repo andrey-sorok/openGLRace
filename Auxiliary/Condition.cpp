@@ -1,5 +1,7 @@
 #include "Condition.h"
 
+#include "C2DModel.h"
+
 CCondition::CCondition()
 {
 	m_WINWIDTH = 0;
@@ -7,6 +9,8 @@ CCondition::CCondition()
 
 	m_IsMouseMove = false;
 	m_CurGameState = StartMenu;
+
+	m_CurTrackState = fNoneTrack;
 
 	m_CurFigure = fNone;
 	CColor3D InitColor(0, 255, 0);

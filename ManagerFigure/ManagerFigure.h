@@ -28,7 +28,6 @@ public:
 	std::unique_ptr<CSelector> GetSelector();
 
 	void SetConditions(std::shared_ptr<CCondition> InConditions) { m_pConditions.reset(InConditions.get()); };
-
 	std::shared_ptr<CCondition> GetConditions() { return m_pConditions; };
 
 	void CreateNewFigure(int x, int y);

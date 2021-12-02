@@ -106,6 +106,37 @@ void CMouse::MouseClick(int button, int state, int x, int y, bool& InIsMouseMove
 						}
 					//__
 					}
+					else if (ChangeState == Game)
+					{
+						auto pBinFile = std::make_unique<CBinFile>();
+						std::vector<std::string> vPathToModelsFiles = pBinFile->ReadNamesFiles("Cars");
+
+						if (vPathToModelsFiles.size() == 0)
+						{
+							pConditions->SetCurGameState(StartMenu);
+							pBinFile->CloseFile();
+						}
+						else
+						{
+							int first = 0;
+							auto CarsModels = pBinFile->ReadFile(vPathToModelsFiles[first]);
+							m_pScene2D->AddCarModels(CarsModels);
+
+							std::vector<std::vector<std::shared_ptr<CFigureBase>>> CurModels = m_pScene2D->GetCarModels();
+							std::vector<std::shared_ptr<CFigureBase>> Model = CurModels[first];
+							
+							auto pModel = std::make_shared<C2DModel>(Model);
+							
+							m_pScene2D->AddModel(pModel);
+
+							pBinFile->CloseFile();
+
+							m_pScene2D->SetCurModel(pModel);
+
+							//pConditions->SetCurModel(pModel);
+							pConditions->SetCurGameState(Game);
+						}
+					}
 
 					break;
 				}
@@ -151,6 +182,11 @@ void CMouse::MouseClick(int button, int state, int x, int y, bool& InIsMouseMove
 
 							break;
 						}
+						else if (m_pScene2D->ChecClickSave(p.x, p.y))
+						{
+							pConditions->SetCurGameState(StartMenu);
+							break;
+						}
 						else
 						{
 							CColor3D CurColor = m_pScene2D->GetClickColor(x, y);
@@ -173,6 +209,7 @@ void CMouse::MouseClick(int button, int state, int x, int y, bool& InIsMouseMove
 				}
 				case Game:
 				{
+
 					int i = 0;
 					++i;
 					break;
@@ -183,6 +220,8 @@ void CMouse::MouseClick(int button, int state, int x, int y, bool& InIsMouseMove
 					
 					if (pC2DGameModel)
 					{
+						m_pScene2D->SetCurModel(pC2DGameModel);
+						//pConditions->SetCurModel(pC2DGameModel);
 						pConditions->SetCurGameState(Game);
 					}
 					

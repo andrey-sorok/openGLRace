@@ -42,6 +42,7 @@ public:
 	void DrawExistingModels();
 	void DrawRedactComponents();
 	void DrawStartMenu();
+	void DrawMoveTrack1(TrackState InState);
 
 	void Draw2DOject(CFigureBase* pInFigure);
 	
@@ -54,52 +55,15 @@ public:
 	void DrawCircle(CCycle* inCycle);
 
 	void DrawAxes(CLine2D* inAbciss, CLine2D* inOrdinate);
+	//Track Direction
 
-	//MOVE
-	template<typename TFigure>
-	void MoveOnLine(TFigure pFigure);
-
-	template<typename TFigure>
-	void MoveOnCycle(TFigure pFigure);
-	//END_MOVE
+	void KeyReDrowTrack(EDirect InDirec, int d);
 
 private:
 	void DrawCircle(CColor3D * inColor, float cx, float cy, float r, int num_segments);
 
+	void DrawTrack1();
+
 };
 
 #endif //__2DRENDER_
-
-template<typename TFigure>
-void C2DRender::MoveOnLine(TFigure pFigure)
-{
-	std::list<CPoint2D*> pListPoints = pFigure->GetPoints();
-	int sizePoints = pListPoints.size();
-	for (int iPoint = 0; iPoint < sizePoints; ++iPoint)
-	{
-		CPoint2D* pPoint = pListPoints.front();
-		pListPoints.pop_front();
-
-		pPoint->x += 1.00;
-	}
-
-}
-
-template<typename TFigure>
-inline void C2DRender::MoveOnCycle(TFigure pFigure)
-{
-
-	glRotatef(10, 10, 0, 0);
-	//std::list<CPoint2D*> pListPoints = pFigure->GetPoints();
-	//int sizePoints = pListPoints.size();
-	//for (int iPoint = 0; iPoint < sizePoints; ++iPoint)
-	//{
-	//	CPoint2D* pPoint = pListPoints.front();
-	//	pListPoints.pop_front();
-
-	//	float theta = 2.0f * 3.1415926f * float(ii) / float(num_segments);//get the current angle 
-	//	float x = r * cosf(theta);//calculate the x component 
-	//	float y = r * sinf(theta);//calculate the y component 
-	//	//glVertex2f(x + cx, y + cy);//output vertex 
-	//}
-}

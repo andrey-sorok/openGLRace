@@ -1,12 +1,15 @@
 #ifndef __2DMODEL_
 #define __2DMODEL_
 
+#include "Types.h"
+
 #include <list>
 #include <vector>
 #include <memory>
 
 
 class CFigureBase;
+class CPoint2D;
 
 class C2DModel
 {
@@ -17,6 +20,19 @@ private:
 
 	int m_Center_X;
 	int m_Center_Y;
+
+	int m_minX;
+	int m_minY;
+
+	int m_maxX;
+	int m_maxY;
+
+	CPoint2D* m_CenterXY;
+
+	CPoint2D* m_MinXY;
+	CPoint2D* m_MaxXY;
+
+	CPoint2D* m_OffsetXY;
 
 public:
 	//C2DModel();
@@ -35,13 +51,18 @@ public:
 
 	std::pair<double, double> GetCenter() { return std::make_pair(m_Center_X, m_Center_Y); };
 
-	/*void Rotate(double Angle);*/
-	//void Translate(double InX, double InY);
+	std::pair<CPoint2D, CPoint2D> GetMinMaxRectXY();
+
+	void SetiP(int IniP) { m_iP = IniP; };
+
+	void SetOffset(EDirect InDirect,  float d);
+	CPoint2D* GetOffset() { return m_OffsetXY; };
+
+private:
 
 	std::pair<double, double> CalcCenterModel(std::list<std::shared_ptr<CFigureBase>>& ModelObjects2D);
 
-private:
-	
+	void SetMinMaxRectXY(std::pair<CPoint2D, CPoint2D> MinMaxPoint);	
 };
 
 #endif //2DMODEL

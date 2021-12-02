@@ -4,6 +4,8 @@
 #include <GL\glew.h>
 #include <GL\freeglut.h>
 //__
+#include <ProjManager.h>
+
 #include "Scene2D.h"
 #include "OpenGLRender.h"
 #include "KeyBoard.h"
@@ -49,15 +51,14 @@ GLdouble m_OrthoMaxY = 0.00;
 GLdouble m_OrthoMinZ = 0.00;
 GLdouble m_OrthoMaxZ = 0.00;
 
-auto pOpenGlRender = std::make_unique<COpenGLRender>();
+auto pProjManager = std::make_shared<CProjManager>();
 
+auto pOpenGlRender = std::make_shared<COpenGLRender>();
 auto pCondition= std::make_shared<CCondition>();
-
-auto p2DRender = std::make_unique<C2DRender>();
-
+auto p2DRender = std::make_shared<C2DRender>();
 auto pFMGManager = std::make_shared<CManagerFigure>();
-auto pKeyBoard = std::make_unique<CKeyBoard>();
 
+auto pKeyBoard = std::make_unique<CKeyBoard>();
 auto pMouse = std::make_unique<CMouse>();
 //END_Global_VAR
 
@@ -155,6 +156,13 @@ int main(int argc, char* argv[])
 	pMouse->SetScene2D(p2DRender->GetScene2D());
 
 	pOpenGlRender->InitWindowParams(WINWIDTH, WINHEIGHT, 0, 0);
+
+	pProjManager->SetFMGManager(pFMGManager);
+	pProjManager->SetConditions(pCondition);
+	pProjManager->Set2DRender(p2DRender);
+	pProjManager->SetScene(p2DRender->GetScene2D());
+
+	pKeyBoard->SetProjManager(pProjManager);
 
 	glutCreateWindow("TestGL");   // Create the window with the title "Tactical_Hacker,GL"
 //--

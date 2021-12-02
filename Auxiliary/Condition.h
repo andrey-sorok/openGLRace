@@ -8,6 +8,9 @@
 
 #include <string>
 #include <vector>
+#include <memory>
+
+class C2DModel;
 
 class CCondition
 {
@@ -18,6 +21,8 @@ private:
 
 	bool m_IsMouseMove;
 	GameState m_CurGameState;
+
+	TrackState m_CurTrackState;
 
 	EFigure m_CurFigure;
 	CColor3D m_CurColor;
@@ -31,6 +36,8 @@ private:
 	std::vector<std::string> m_Paths2Models;
 
 	std::vector<std::vector<std::pair<CPoint2D, CPoint2D>>> vOutModelsGreed;
+
+	std::shared_ptr<C2DModel> m_CurModel;
 
 public:
 	CCondition();
@@ -71,6 +78,9 @@ public:
 
 	void SetOutModelsGreed(std::vector<std::vector<std::pair<CPoint2D, CPoint2D>>> InVector) { vOutModelsGreed = InVector; };
 	std::vector<std::vector<std::pair<CPoint2D, CPoint2D>>> GetOutModelsGreed() { return vOutModelsGreed; };
+
+	void SetCurModel(std::shared_ptr<C2DModel> InCurModel ) { m_CurModel = InCurModel; };
+	std::shared_ptr<C2DModel> GetCurModel() { return m_CurModel; };
 };
 
 #endif //__CONDITION_

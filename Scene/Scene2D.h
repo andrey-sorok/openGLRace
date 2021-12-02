@@ -26,10 +26,12 @@ private:
 
 	std::vector<std::shared_ptr<CFigureBase>> GetStartMenObj();
 
-	std::vector<std::vector<std::shared_ptr<CFigureBase>>> vCarsModels;
+	std::vector<std::vector<std::shared_ptr<CFigureBase>>> m_vCarsModels;
 
 	//__
-	std::vector<std::shared_ptr<C2DModel>> vModels;
+	std::vector<std::shared_ptr<C2DModel>> m_vModels;
+	std::shared_ptr<C2DModel> m_CurTrackModel;
+
 	//__
 
 public:
@@ -38,11 +40,12 @@ public:
 
 	//__
 	void AddModel(std::shared_ptr<C2DModel> InrModel);
-	std::vector<std::shared_ptr<C2DModel>> GetModels() { return vModels; };
+	std::vector<std::shared_ptr<C2DModel>> GetModels() { return m_vModels; };
+	std::shared_ptr<C2DModel> GetModel(int InNumModel);
 	//__
 
 	void AddCarModels(std::vector<std::shared_ptr<CFigureBase>> InCarModels);
-	std::vector<std::vector<std::shared_ptr<CFigureBase>>> GetCarModels() { return vCarsModels; };
+	std::vector<std::vector<std::shared_ptr<CFigureBase>>> GetCarModels() { return m_vCarsModels; };
 
 	std::vector<std::shared_ptr<CFigureBase>> GetDrawRedactObjCondition();
 	
@@ -54,11 +57,16 @@ public:
 
 	bool ChecClickSaveAndExit(int InX, int InY);
 
+	bool ChecClickSave(int InX, int InY);
+
 	CColor3D GetClickColor(int InX, int InY);
 
 	GameState CheckStartMenuClick(CPoint3D InPointClick);
 
 	std::shared_ptr<C2DModel> GetChoceModel(std::vector<std::vector<std::pair<CPoint2D, CPoint2D>>> vPointGrid, CPoint3D p);
+
+	void SetCurModel(std::shared_ptr<C2DModel> InCurModel) { m_CurTrackModel = InCurModel; };
+	std::shared_ptr<C2DModel> GetCurModel() { return m_CurTrackModel; };
 
 };
 
