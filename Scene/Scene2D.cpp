@@ -102,11 +102,62 @@ std::vector<std::shared_ptr<CFigureBase>> CScene2D::GetStartMenObj()
 	return m_StartMenuObj;
 }
 
-CScene2D::CScene2D()
+void CScene2D::GenerateCurdModel(int WinWidth, int InCerbHeight)
 {
-	
+	//Num Cerbs
+	int n = 5;
+
+	int numCurb = WinWidth / n;
+	int curPosX = 0;
+
+	CColor3D colorWhite(255, 255, 255);
+	CColor3D colorBlack(0, 0, 0);
+	std::vector<std::shared_ptr<CFigureBase>> Objects2D;
+	//0
+	curPosX = -numCurb;
+	auto pRect0 = std::make_shared<CRect2D>(CPoint2D(-curPosX, 0), CPoint2D(curPosX + numCurb, InCerbHeight), colorWhite);
+	Objects2D.emplace_back(pRect0);
+	//1
+	auto pRect1 = std::make_shared<CRect2D>(CPoint2D(curPosX, 0), CPoint2D(curPosX + numCurb, InCerbHeight), colorWhite);
+	Objects2D.emplace_back(pRect1);
+	//m_Ñurb->Add2Objects2D(pRect1);
+	//2
+	curPosX += numCurb;
+	auto pRect2 = std::make_shared<CRect2D>(CPoint2D(curPosX, 0), CPoint2D(curPosX + numCurb, InCerbHeight), colorBlack);
+	//m_Ñurb->Add2Objects2D(pRect2);
+	Objects2D.emplace_back(pRect2);
+	//3
+	curPosX += numCurb;
+	auto pRect3 = std::make_shared<CRect2D>(CPoint2D(curPosX, 0), CPoint2D(curPosX + numCurb, InCerbHeight), colorWhite);
+	//m_Ñurb->Add2Objects2D(pRect3);
+	Objects2D.emplace_back(pRect3);
+	//4
+	curPosX += numCurb;
+	auto pRect4 = std::make_shared<CRect2D>(CPoint2D(curPosX, 0), CPoint2D(curPosX + numCurb, InCerbHeight), colorBlack);
+	Objects2D.emplace_back(pRect4);
+	//m_Ñurb->Add2Objects2D(pRect4);
+	//5
+	curPosX += numCurb;
+	auto pRect5 = std::make_shared<CRect2D>(CPoint2D(curPosX, 0), CPoint2D(curPosX + numCurb, InCerbHeight), colorWhite);
+	Objects2D.emplace_back(pRect5);
+	//m_Ñurb->Add2Objects2D(pRect5);
+	//6
+	curPosX += numCurb;
+	auto pRect6 = std::make_shared<CRect2D>(CPoint2D(curPosX, 0), CPoint2D(curPosX + numCurb, InCerbHeight), colorBlack);
+	Objects2D.emplace_back(pRect6);
+	//7
+	curPosX += numCurb;
+	auto pRect7 = std::make_shared<CRect2D>(CPoint2D(curPosX, 0), CPoint2D(curPosX + numCurb, InCerbHeight), colorWhite);
+	Objects2D.emplace_back(pRect7);
+
+	m_Ñurb = std::make_shared<C2DModel>(Objects2D);
+	curPosX += numCurb;
+	m_Ñurb->SetLenghtModel(curPosX);
 }
 
+CScene2D::CScene2D()
+{	
+}
 
 CScene2D::~CScene2D()
 {

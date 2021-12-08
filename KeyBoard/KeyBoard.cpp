@@ -19,11 +19,6 @@ CKeyBoard::~CKeyBoard()
 {
 }
 
-void CKeyBoard::SetFigureManager(std::shared_ptr<CManagerFigure> InMNGFigure)
-{
-	pMNGFigure.reset(InMNGFigure.get());
-}
-
 void CKeyBoard::SetProjManager(std::shared_ptr<CProjManager> InProjManager)
 {
 	m_ProjManager.reset(InProjManager.get());
@@ -43,25 +38,28 @@ void CKeyBoard::KeyProcess(int key, int x, int y)
 				break;
 			}
 			case 100:
-			{
+			{   auto pMNGFigure = m_ProjManager->GetFMGManager();
 				pMNGFigure->SetNewCoord(-10, 0);
 				printf("GLUT_KEY_LEFT %d\n", key);
 				break;
 			}
 			case 102:
 			{
+				auto pMNGFigure = m_ProjManager->GetFMGManager();
 				pMNGFigure->SetNewCoord(10, 0);
 				printf("GLUT_KEY_RIGHT %d\n", key);
 				break;
 			}
 			case 101:
 			{
+				auto pMNGFigure = m_ProjManager->GetFMGManager();
 				pMNGFigure->SetNewCoord(0, -10);
 				printf("GLUT_KEY_UP %d\n", key);
 				break;
 			}
 			case 103:
 			{
+				auto pMNGFigure = m_ProjManager->GetFMGManager();
 				pMNGFigure->SetNewCoord(0, 10);
 				printf("GLUT_KEY_DOWN %d\n", key);
 				break;
@@ -91,6 +89,7 @@ void CKeyBoard::KeyStroke(unsigned char key, int x, int y)
 			break;
 		case 127: // Delete button
 		{
+			auto pMNGFigure = m_ProjManager->GetFMGManager();
 			pMNGFigure->RemoveAllSelectFigures(pMNGFigure->GetObjects());
 			break;
 		}
@@ -102,7 +101,41 @@ void CKeyBoard::KeyStroke(unsigned char key, int x, int y)
 
 void CKeyBoard::TrackProcess(int key, int x, int y)
 {
-	float offse = 10.00;
+	auto pScene = m_ProjManager->GetScene();
+	auto pCurModel = pScene->GetCurModel();
+
+	auto pCenter = pCurModel->GetCenter();
+	auto pMinMaxXY = pCurModel->GetMinMaxModelRect(pCurModel->GetObjects2D());
+	
+	int dx1 =  pMinMaxXY.second.x - pCenter.first;
+	dx1 = abs(dx1);
+	
+	int dy1 = pCenter.second - pMinMaxXY.first.y;
+	dy1 = abs(dy1);
+
+	auto pCurPosition = pCurModel->GetCurPositionXY();
+	
+	double scaleX = pCurModel->GetScaleX();
+	double scaleY = pCurModel->GetScaleY();
+
+	int curX1 =  pCurPosition->x - (dx1*scaleX);
+	int curX2 = pCurPosition->x + (dx1*scaleX);
+
+	int curY1 = pCurPosition->y - (dy1*scaleY);
+	int curY2 = pCurPosition->y + (dy1*scaleY);
+	
+	auto pConditions = m_ProjManager->GetConditions();
+	std::list<double> lstLeftRightUpDoen = pConditions->GeteftRightUpBottom();
+	double left = lstLeftRightUpDoen.front();
+	lstLeftRightUpDoen.pop_front();
+	double right = lstLeftRightUpDoen.front();
+	lstLeftRightUpDoen.pop_front();
+	double up = lstLeftRightUpDoen.front();
+	lstLeftRightUpDoen.pop_front();
+	double down = lstLeftRightUpDoen.front();
+	lstLeftRightUpDoen.pop_front();
+
+	float offse = 20.00;
 	switch (key)
 	{
 		case 27:
@@ -112,47 +145,45 @@ void CKeyBoard::TrackProcess(int key, int x, int y)
 
 		case 100:
 		{
-			auto pScene = m_ProjManager->GetScene();
-			auto pCurModel = pScene->GetCurModel();
-
-			pCurModel->SetOffset(fHorizontal, -offse);
-
-			printf("GLUT_KEY_LEFT %d\n", key);
+			if (curX1 > left)
+			{
+				pCurModel->SetOffset(fHorizontal, -offse);
+				printf("GLUT_KEY_LEFT %d\n", key);
+			}
 			break;
 		}
 
 		case 102:
 		{
-			auto pScene = m_ProjManager->GetScene();
-			auto pCurModel = pScene->GetCurModel();
-
-			pCurModel->SetOffset(fHorizontal, +offse);
-
-			printf("GLUT_KEY_RIGHT %d\n", key);
+			if (curX2 < right)
+			{
+				pCurModel->SetOffset(fHorizontal, +offse);
+				printf("GLUT_KEY_RIGHT %d\n", key);
+			}
 			break;
 		}
 
 		case 101:
 		{
-			auto pScene = m_ProjManager->GetScene();
-			auto pCurModel = pScene->GetCurModel();
+			if ((curY1- offse) > up)
+			{
+				pCurModel->SetOffset(fVertical, -offse);
 
-			pCurModel->SetOffset(fVertical, -offse);
-
-			printf("GLUT_KEY_UP %d\n", key);
+				printf("GLUT_KEY_UP %d\n", key);
+			}
 			break;
 		}
 
 		case 103:
 		{
-			auto pScene = m_ProjManager->GetScene();
-			auto pCurModel = pScene->GetCurModel();
+			if ((curY2+ offse) < down)
+			{
+				pCurModel->SetOffset(fVertical, +offse);
 
-			pCurModel->SetOffset(fVertical, +offse);
-
-			printf("GLUT_KEY_DOWN %d\n", key);
+				printf("GLUT_KEY_DOWN %d\n", key);
+			}
 			break;
 		}
 	}
-
+	
 }

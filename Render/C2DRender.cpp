@@ -561,7 +561,6 @@ void C2DRender::DrawTrack1()
 	CPoint2D BeginXY(lengthX, pCondition->GetWINHEIGHT() / 2);
 
 	auto centerXY = pCurModel->GetCenter();
-
 	auto MinMaxXYRect = pCurModel->GetMinMaxRectXY();
 
 	float lengthModelX = MinMaxXYRect.second.x - MinMaxXYRect.first.x;
@@ -569,19 +568,20 @@ void C2DRender::DrawTrack1()
 
 	float scaleX = (lengthX / lengthModelX);
 	float scaleY = (lengthY / lengthModelY);
+
+	pCurModel->SetScaleX(scaleX);
+	pCurModel->SetScaleY(scaleY);
 	
 	CPoint2D* offseXY = pCurModel->GetOffset();
 
 	glPushMatrix();
 
 	glTranslatef(lengthX + offseXY->x, (pCondition->GetWINHEIGHT() / 2) + offseXY->y, 0);
-	
 	glScalef(scaleX, scaleY, 0);
-	
 	glRotatef(+90.00, 0, 0, 1);
 	glTranslatef(-centerXY.first, -centerXY.second, 0);
 
-	//glScalef(scaleX / 2, scaleY / 2, 0);
+	pCurModel->SetCurPositionXY(CPoint2D(lengthX + offseXY->x, (pCondition->GetWINHEIGHT() / 2) + offseXY->y));
 
 	for (auto iObj : Objects2D)
 	{	
@@ -589,4 +589,87 @@ void C2DRender::DrawTrack1()
 	}
 
 	glPopMatrix();
+
+//Cerb
+	std::shared_ptr<C2DModel > pCurbModel = m_pScene2D->GetCurb();
+	GeneRateCerb(pCurbModel);
+//end_Cerb
+
+	CPoint2D* OffsetXY = pCurbModel->GetOffset();
+	int height = pCondition->GetWINHEIGHT();
+	std::list<std::shared_ptr<CFigureBase>> lstCurbModelObjects = pCurbModel->GetObjects2D();
+	for (auto iFigure : lstCurbModelObjects)
+	{	
+		glPushMatrix();
+		glTranslatef( -OffsetXY->x, 0, 0);
+		auto pBase = iFigure.get();
+		Draw2DOject(pBase);
+		
+		glPopMatrix();
+
+
+		glPushMatrix();
+		glTranslatef(-OffsetXY->x, height - 25, 0);
+		
+		Draw2DOject(pBase);
+
+		glPopMatrix();
+
+	}
+
+	int CurLoopTrack1 = pCondition->GetCurLoopDrawTrack1();
+	CurLoopTrack1++;
+	pCondition->SetCurLoopDrawTrack1(CurLoopTrack1);
+}
+
+void C2DRender::GeneRateCerb(std::shared_ptr<C2DModel> InModel)
+{
+	auto pCondition = pMNGFigure->GetConditions();
+	float width = pCondition->GetWINWIDTH();
+	float NumCurbs = pCondition->GetCurbs();
+
+	float offsetX = width / (NumCurbs * NumCurbs * NumCurbs);
+	InModel->SetOffset(fHorizontal, offsetX);
+
+	int MaxOffsetX = width / NumCurbs;
+
+	CPoint2D* OffsetXY = InModel->GetOffset();
+
+	int CurLoopTrack1 = pCondition->GetCurLoopDrawTrack1();
+	int MinLoop = 24;
+	int MaxLoop = 100;
+	if (CurLoopTrack1 == MinLoop)
+	{
+		int tmpLoop = InModel->GetTimeSet1();
+		tmpLoop += CurLoopTrack1;
+		InModel->SetTimeSet1(tmpLoop);
+
+		int InCerbHeight = pCondition->GetCerbHeight();
+		pCondition->SetCurLoopDrawTrack1(0);
+		std::list<std::shared_ptr<CFigureBase>>& CurObjects2D = InModel->GetObjects2D();
+
+		int dif = tmpLoop / MinLoop;
+		if (dif == 3)
+		{
+			CurObjects2D.pop_front();//list front position list clear 
+			InModel->SetTimeSet1(0);
+		}
+
+		auto pRect = CurObjects2D.back();
+		auto pColor = pRect->GetColor();
+
+		CColor3D* Color = new CColor3D(0, 0, 0);
+		if ((pColor->R == Color->R) && (pColor->G == Color->G) && (pColor->B == Color->B))
+		{
+			Color->R = 255;
+			Color->G = 255;
+			Color->B = 255;
+		}
+
+		int curPosX = InModel->GetLenghtModel();
+		int newPos = curPosX + MaxOffsetX;
+		auto pRect1 = std::make_shared<CRect2D>(CPoint2D(curPosX, 0), CPoint2D(newPos, InCerbHeight), CColor3D(Color->R, Color->G, Color->B));
+		CurObjects2D.emplace_back(pRect1);
+		InModel->SetLenghtModel(newPos);
+	}
 }

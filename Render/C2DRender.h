@@ -17,6 +17,7 @@ class CCycle;
 class CLine2D;
 
 class CScene2D;
+class C2DModel;
 
 class C2DRender :public COpenGLRender
 {
@@ -63,6 +64,7 @@ private:
 	void DrawCircle(CColor3D * inColor, float cx, float cy, float r, int num_segments);
 
 	void DrawTrack1();
+	void GeneRateCerb(std::shared_ptr<C2DModel> InModel);
 
 };
 

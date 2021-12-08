@@ -22,6 +22,19 @@ CCondition::CCondition()
 	m_CarsFolder = "";
 
 	m_NumCars = 0;
+
+	m_NumCurbs = 5;
+
+	m_ÑurbOffset = 20.00;
+
+	m_CerbHeight = 25;
+
+	m_CurLoopDrawTrack1 = 0;
+
+	m_Left = 0.00;
+	m_Right = 0.00;
+	m_Up = 0.00;
+	m_Down = 0.00;
 }
 
 
@@ -37,4 +50,22 @@ void CCondition::SetWINWIDTH(int InWinWidth)
 void CCondition::SetWINHEIGHT(int InWinHeight)
 {
 	m_WINHEIGHT = InWinHeight;
+}
+
+void CCondition::SetLeftRightUpBottom(double left, double right, double up, double down)
+{
+	m_Left = left;
+	m_Right = right;
+	m_Up = up;
+	m_Down = down;
+}
+
+std::list<double> CCondition::GeteftRightUpBottom()
+{
+	std::list<double> rtnLst;
+	rtnLst.push_back(m_Left);
+	rtnLst.push_back(m_Right);
+	rtnLst.push_back(m_Up);
+	rtnLst.push_back(m_Down);
+	return rtnLst;
 }

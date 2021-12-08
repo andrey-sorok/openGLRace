@@ -28,11 +28,16 @@ private:
 
 	std::vector<std::vector<std::shared_ptr<CFigureBase>>> m_vCarsModels;
 
-	//__
+//Track
+	std::shared_ptr<C2DModel> m_Ñurb;
+
 	std::vector<std::shared_ptr<C2DModel>> m_vModels;
 	std::shared_ptr<C2DModel> m_CurTrackModel;
+	
+//End_Track
 
-	//__
+private:
+
 
 public:
 	CScene2D();
@@ -67,6 +72,10 @@ public:
 
 	void SetCurModel(std::shared_ptr<C2DModel> InCurModel) { m_CurTrackModel = InCurModel; };
 	std::shared_ptr<C2DModel> GetCurModel() { return m_CurTrackModel; };
+
+	void GenerateCurdModel(int WinWidth, int InCerbHeight);
+
+	std::shared_ptr<C2DModel> GetCurb() { return m_Ñurb; };
 
 };
 

@@ -10,14 +10,12 @@ class CManagerFigure;
 class CKeyBoard
 {
 private:
-	std::shared_ptr<CManagerFigure> pMNGFigure;
 	std::shared_ptr<CProjManager> m_ProjManager;
 
 public:
 	CKeyBoard();
 	~CKeyBoard();
 
-	void SetFigureManager(std::shared_ptr<CManagerFigure> InMNGFigure);
 	void SetProjManager(std::shared_ptr<CProjManager> InProjManager);
 
 	void KeyProcess(int key, int x, int y);

@@ -9,6 +9,7 @@
 #include <string>
 #include <vector>
 #include <memory>
+#include<list>
 
 class C2DModel;
 
@@ -33,11 +34,22 @@ private:
 	std::string m_CarsFolder;
 	int m_NumCars;
 
+	int m_NumCurbs;
+
+	float m_ÑurbOffset;
+
+	int m_CerbHeight;
+
+	int m_CurLoopDrawTrack1;
+
+	double m_Left;
+	double m_Right;
+	double m_Up;
+	double m_Down;
+
 	std::vector<std::string> m_Paths2Models;
 
 	std::vector<std::vector<std::pair<CPoint2D, CPoint2D>>> vOutModelsGreed;
-
-	std::shared_ptr<C2DModel> m_CurModel;
 
 public:
 	CCondition();
@@ -73,14 +85,26 @@ public:
 	void SetNumCars(int InNumCars) { m_NumCars = InNumCars; };
 	int& GetNumCars() { return m_NumCars; };
 
+	void SetCurbs(int InCurbs) { m_NumCurbs = InCurbs; };
+	int GetCurbs() { return m_NumCurbs; };
+
 	void SetPaths2Models(const std::vector<std::string> InPath2ModelsFiles) { m_Paths2Models = InPath2ModelsFiles; };
 	std::vector<std::string> GetPaths2Models() { return m_Paths2Models; };
 
 	void SetOutModelsGreed(std::vector<std::vector<std::pair<CPoint2D, CPoint2D>>> InVector) { vOutModelsGreed = InVector; };
 	std::vector<std::vector<std::pair<CPoint2D, CPoint2D>>> GetOutModelsGreed() { return vOutModelsGreed; };
 
-	void SetCurModel(std::shared_ptr<C2DModel> InCurModel ) { m_CurModel = InCurModel; };
-	std::shared_ptr<C2DModel> GetCurModel() { return m_CurModel; };
+	void SetOffset(float InOffset) { m_ÑurbOffset = InOffset; };
+	float GetOffset() { return m_ÑurbOffset; };
+
+	int GetCerbHeight() { return m_CerbHeight; };
+
+	void SetCurLoopDrawTrack1(int InCurLoopDrawTrack) { m_CurLoopDrawTrack1 = InCurLoopDrawTrack; };
+	int GetCurLoopDrawTrack1() { return m_CurLoopDrawTrack1; };
+
+	void SetLeftRightUpBottom(double left, double right, double up, double down);
+	std::list<double> GeteftRightUpBottom();
+	
 };
 
 #endif //__CONDITION_

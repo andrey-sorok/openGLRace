@@ -149,8 +149,6 @@ int main(int argc, char* argv[])
 	pFMGManager->SetConditions(pCondition);
 
 	p2DRender->SetFigureManager(pFMGManager);
-
-	pKeyBoard->SetFigureManager(pFMGManager);
 	
 	pMouse->SetFigureManager(pFMGManager);
 	pMouse->SetScene2D(p2DRender->GetScene2D());
