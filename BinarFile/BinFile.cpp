@@ -43,6 +43,8 @@ bool CBinFile::Open(std::string fPath, fileAccess access)
 
 void CBinFile::Write(CFigureBase * pBase)
 {
+	if (pBase == nullptr)
+		return;
 	auto LmdWriteTypeColor = [&pBase](std::fstream & File)
 	{
 		EFigure fType = pBase->GetType();
