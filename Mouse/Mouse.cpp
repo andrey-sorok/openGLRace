@@ -214,6 +214,7 @@ void CMouse::MouseClick(int button, int state, int x, int y, bool& InIsMouseMove
 					}
 					break;
 				}
+				
 				case Game:
 				{
 
@@ -221,6 +222,7 @@ void CMouse::MouseClick(int button, int state, int x, int y, bool& InIsMouseMove
 					++i;
 					break;
 				}
+				
 				case Choice:
 				{
 					auto pC2DGameModel = m_pScene2D->GetChoceModel(pConditions->GetOutModelsGreed(), p);
