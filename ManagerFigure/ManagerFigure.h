@@ -43,7 +43,7 @@ public:
 
 	bool ClickedObj2D(int x, int y);
 
-	int GetObjecs2DSize() { return m_Ojects2D.size(); };
+	int GetObjecs2DSize() { return static_cast<int>(m_Ojects2D.size()); };
 	bool SetNewCoord(int x, int y);
 
 	bool SetNewCoord(bool IsMouse, const int x, const int y);

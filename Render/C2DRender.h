@@ -58,11 +58,10 @@ public:
 	void DrawAxes(CLine2D* inAbciss, CLine2D* inOrdinate);
 	//Track Direction
 
-	void KeyReDrowTrack(EDirect InDirec, int d);
-
 private:
 	void DrawCircle(CColor3D * inColor, float cx, float cy, float r, int num_segments);
 
+	void DrawTrack1Objects();
 	void DrawTrack1();
 	void GeneRateCerb(std::shared_ptr<C2DModel> InModel);
 

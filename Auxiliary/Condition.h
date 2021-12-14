@@ -33,12 +33,13 @@ private:
 
 	std::string m_CarsFolder;
 	int m_NumCars;
-
+	
 	int m_NumCurbs;
 
 	float m_ÑurbOffset;
-
 	int m_CerbHeight;
+
+	RectForCarInTrack m_RectForCarInTrack;
 
 	int m_CurLoopDrawTrack1;
 
@@ -50,6 +51,8 @@ private:
 	std::vector<std::string> m_Paths2Models;
 
 	std::vector<std::vector<std::pair<CPoint2D, CPoint2D>>> vOutModelsGreed;
+
+	bool m_IsGenerate;
 
 public:
 	CCondition();
@@ -104,6 +107,11 @@ public:
 
 	void SetLeftRightUpBottom(double left, double right, double up, double down);
 	std::list<double> GeteftRightUpBottom();
+
+	void SetIsGenerate(bool IsGenerate) { m_IsGenerate = IsGenerate; };
+	bool GetIsGenerate() { return m_IsGenerate; };
+
+	RectForCarInTrack GetRectForCarInTrack() {  return m_RectForCarInTrack; };
 	
 };
 

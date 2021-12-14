@@ -23,11 +23,14 @@ CCondition::CCondition()
 
 	m_NumCars = 0;
 
-	m_NumCurbs = 5;
+	m_NumCurbs = 5;//число смен цвета в бардюре 
 
 	m_СurbOffset = 20.00;
 
 	m_CerbHeight = 25;
+
+	m_RectForCarInTrack.lengthX = 100;
+	m_RectForCarInTrack.lengthY = 100;
 
 	m_CurLoopDrawTrack1 = 0;
 
@@ -35,6 +38,8 @@ CCondition::CCondition()
 	m_Right = 0.00;
 	m_Up = 0.00;
 	m_Down = 0.00;
+
+	m_IsGenerate = false;
 }
 
 

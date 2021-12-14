@@ -37,4 +37,10 @@ enum EDirect
 
 enum fileAccess { in, out, inout };
 
+struct RectForCarInTrack
+{
+	float lengthX;
+	float lengthY;
+};
+
 #endif //

@@ -13,7 +13,7 @@ class CPoint2D;
 
 class C2DModel
 {
-private:
+protected:
 	std::list<std::shared_ptr<CFigureBase>> m_Objects2D;
 
 	int m_iP;
@@ -77,7 +77,7 @@ public:
 	void SetScaleY(double InScaleY) { m_ScaleY = InScaleY; };
 	double GetScaleY() { return m_ScaleY; };
 
-private:
+protected:
 
 	std::pair<double, double> CalcCenterModel(std::list<std::shared_ptr<CFigureBase>>& ModelObjects2D);
 

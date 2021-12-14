@@ -14,6 +14,7 @@ class CPoint3D;
 class CPoint2D;
 
 class C2DModel;
+class C2DGenModel;
 
 class CScene2D
 {
@@ -33,6 +34,8 @@ private:
 
 	std::vector<std::shared_ptr<C2DModel>> m_vModels;
 	std::shared_ptr<C2DModel> m_CurTrackModel;
+
+	std::vector<std::shared_ptr<C2DGenModel>> m_Ttrack1Models;
 	
 //End_Track
 
@@ -44,7 +47,7 @@ public:
 	~CScene2D();
 
 	//__
-	void AddModel(std::shared_ptr<C2DModel> InrModel);
+	void AddModel(std::shared_ptr<C2DModel> InModel);
 	std::vector<std::shared_ptr<C2DModel>> GetModels() { return m_vModels; };
 	std::shared_ptr<C2DModel> GetModel(int InNumModel);
 	//__
@@ -76,6 +79,10 @@ public:
 	void GenerateCurdModel(int WinWidth, int InCerbHeight);
 
 	std::shared_ptr<C2DModel> GetCurb() { return m_Ñurb; };
+
+	std::vector<std::shared_ptr<C2DGenModel>> GenerateTrack1Models();
+	void SeTrack1Models(std::vector<std::shared_ptr<C2DGenModel>> InTtrack1Models) { m_Ttrack1Models = InTtrack1Models; };
+	std::vector<std::shared_ptr<C2DGenModel>> GetTrack1Models() { return m_Ttrack1Models; };
 
 };
 

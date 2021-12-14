@@ -10,6 +10,7 @@
 #include "Cycle.h"
 
 #include "C2DModel.h"
+#include "C2DGenModel.h"
 
 #include <memory>
 
@@ -115,44 +116,63 @@ void CScene2D::GenerateCurdModel(int WinWidth, int InCerbHeight)
 	std::vector<std::shared_ptr<CFigureBase>> Objects2D;
 	//0
 	curPosX = -numCurb;
-	auto pRect0 = std::make_shared<CRect2D>(CPoint2D(-curPosX, 0), CPoint2D(curPosX + numCurb, InCerbHeight), colorWhite);
+	auto pRect0 = std::make_shared<CRect2D>(CPoint2D(static_cast<float>(-curPosX), 0), CPoint2D(static_cast<float>(curPosX + numCurb), static_cast<float>(InCerbHeight)), colorWhite);
 	Objects2D.emplace_back(pRect0);
 	//1
-	auto pRect1 = std::make_shared<CRect2D>(CPoint2D(curPosX, 0), CPoint2D(curPosX + numCurb, InCerbHeight), colorWhite);
+	auto pRect1 = std::make_shared<CRect2D>(CPoint2D(static_cast<float>(curPosX), 0), CPoint2D(static_cast<float>(curPosX + numCurb), static_cast<float>(InCerbHeight)), colorWhite);
 	Objects2D.emplace_back(pRect1);
 	//m_Сurb->Add2Objects2D(pRect1);
 	//2
 	curPosX += numCurb;
-	auto pRect2 = std::make_shared<CRect2D>(CPoint2D(curPosX, 0), CPoint2D(curPosX + numCurb, InCerbHeight), colorBlack);
+	auto pRect2 = std::make_shared<CRect2D>(CPoint2D(static_cast<float>(curPosX), 0), CPoint2D(static_cast<float>(curPosX + numCurb), static_cast<float>(InCerbHeight)), colorBlack);
 	//m_Сurb->Add2Objects2D(pRect2);
 	Objects2D.emplace_back(pRect2);
 	//3
 	curPosX += numCurb;
-	auto pRect3 = std::make_shared<CRect2D>(CPoint2D(curPosX, 0), CPoint2D(curPosX + numCurb, InCerbHeight), colorWhite);
+	auto pRect3 = std::make_shared<CRect2D>(CPoint2D(static_cast<float>(curPosX), 0), CPoint2D(static_cast<float>(curPosX + numCurb), static_cast<float>(InCerbHeight)), colorWhite);
 	//m_Сurb->Add2Objects2D(pRect3);
 	Objects2D.emplace_back(pRect3);
 	//4
 	curPosX += numCurb;
-	auto pRect4 = std::make_shared<CRect2D>(CPoint2D(curPosX, 0), CPoint2D(curPosX + numCurb, InCerbHeight), colorBlack);
+	auto pRect4 = std::make_shared<CRect2D>(CPoint2D(static_cast<float>(curPosX), 0), CPoint2D(static_cast<float>(curPosX + numCurb), static_cast<float>(InCerbHeight)), colorBlack);
 	Objects2D.emplace_back(pRect4);
 	//m_Сurb->Add2Objects2D(pRect4);
 	//5
 	curPosX += numCurb;
-	auto pRect5 = std::make_shared<CRect2D>(CPoint2D(curPosX, 0), CPoint2D(curPosX + numCurb, InCerbHeight), colorWhite);
+	auto pRect5 = std::make_shared<CRect2D>(CPoint2D(static_cast<float>(curPosX), 0), CPoint2D(static_cast<float>(curPosX + numCurb), static_cast<float>(InCerbHeight)), colorWhite);
 	Objects2D.emplace_back(pRect5);
 	//m_Сurb->Add2Objects2D(pRect5);
 	//6
 	curPosX += numCurb;
-	auto pRect6 = std::make_shared<CRect2D>(CPoint2D(curPosX, 0), CPoint2D(curPosX + numCurb, InCerbHeight), colorBlack);
+	auto pRect6 = std::make_shared<CRect2D>(CPoint2D(static_cast<float>(curPosX), 0), CPoint2D(static_cast<float>(curPosX + numCurb), static_cast<float>(InCerbHeight)), colorBlack);
 	Objects2D.emplace_back(pRect6);
 	//7
 	curPosX += numCurb;
-	auto pRect7 = std::make_shared<CRect2D>(CPoint2D(curPosX, 0), CPoint2D(curPosX + numCurb, InCerbHeight), colorWhite);
+	auto pRect7 = std::make_shared<CRect2D>(CPoint2D(static_cast<float>(curPosX), 0), CPoint2D(static_cast<float>(curPosX + numCurb), static_cast<float>(InCerbHeight)), colorWhite);
 	Objects2D.emplace_back(pRect7);
 
 	m_Сurb = std::make_shared<C2DModel>(Objects2D);
 	curPosX += numCurb;
 	m_Сurb->SetLenghtModel(curPosX);
+}
+
+std::vector<std::shared_ptr<C2DGenModel>> CScene2D::GenerateTrack1Models()
+{
+	std::vector<std::shared_ptr<C2DGenModel>> vRtnTrackModels;
+
+	//ввести время генерации  и рандомизатор типа модели
+
+	auto pRect = std::make_shared<CRect2D>(CPoint2D(0, 0), CPoint2D(50, 50), CColor3D(255, 0, 0));
+	//auto pTrian = std::make_shared<CTriangle2D>(CPoint2D(30, 0), CPoint2D(-30, 30), CPoint2D(30, 30),CColor3D(255, 255, 0));
+
+	std::vector<std::shared_ptr<CFigureBase>> InFigureModel;
+	InFigureModel.emplace_back(pRect);
+	//InFigureModel.emplace_back(pTrian);
+
+	auto pModel = std::make_shared<C2DGenModel>(InFigureModel);
+	vRtnTrackModels.emplace_back(pModel);
+
+	return vRtnTrackModels;
 }
 
 CScene2D::CScene2D()
@@ -163,11 +183,11 @@ CScene2D::~CScene2D()
 {
 }
 
-void CScene2D::AddModel(std::shared_ptr<C2DModel> InrModel)
+void CScene2D::AddModel(std::shared_ptr<C2DModel> InModel)
 {
-	int iP = m_vModels.size() - 1;
-	InrModel->SetiP(iP);
-	m_vModels.emplace_back(InrModel);
+	int iP = static_cast<int>(m_vModels.size()) - 1;
+	InModel->SetiP(iP);
+	m_vModels.emplace_back(InModel);
 }
 
 std::shared_ptr<C2DModel> CScene2D::GetModel(int InNumModel)
@@ -316,7 +336,7 @@ std::shared_ptr<C2DModel> CScene2D::GetChoceModel(std::vector<std::vector<std::p
 			if (((p.x > BegEndpoints.first.x) && (p.x < BegEndpoints.second.x))
 				&& (p.y > BegEndpoints.first.y) && (p.y < BegEndpoints.second.y))
 			{
-				modelNum = ((1 * i) + i) + (i + j);
+				modelNum = ((1 * i) + i) + (i + j); //индексы матрицы 3x3
 			}
 		}
 	}
