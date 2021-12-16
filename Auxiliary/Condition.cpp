@@ -65,7 +65,7 @@ void CCondition::SetLeftRightUpBottom(double left, double right, double up, doub
 	m_Down = down;
 }
 
-std::list<double> CCondition::GeteftRightUpBottom()
+std::list<double> CCondition::GetLeftRightUpBottom()
 {
 	std::list<double> rtnLst;
 	rtnLst.push_back(m_Left);

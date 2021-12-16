@@ -84,6 +84,8 @@ public:
 	void SeTrack1Models(std::vector<std::shared_ptr<C2DGenModel>> InTtrack1Models) { m_Ttrack1Models = InTtrack1Models; };
 	std::vector<std::shared_ptr<C2DGenModel>> GetTrack1Models() { return m_Ttrack1Models; };
 
+	void ClearCurModels();
+
 };
 
 #endif //__SCENE2D_

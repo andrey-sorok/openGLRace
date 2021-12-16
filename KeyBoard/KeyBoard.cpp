@@ -84,9 +84,23 @@ void CKeyBoard::KeyStroke(unsigned char key, int x, int y)
 			break;
 		case 'h':
 			break;
-		case 27: // Esc button
-				 //exit(0);
+
+		case 27: 
+		{
+			// Esc button
+			auto pConditions = m_ProjManager->GetConditions();
+			auto CurGAmeState = pConditions->GetCurGameState();
+			if (CurGAmeState == Game)
+			{
+				auto pScene2D = m_ProjManager->GetScene();
+				pScene2D->ClearCurModels();
+				
+				pConditions->SetCurGameState(StartMenu);
+
+			}
 			break;
+		}
+			
 		case 127: // Delete button
 		{
 			auto pMNGFigure = m_ProjManager->GetFMGManager();
@@ -101,31 +115,33 @@ void CKeyBoard::KeyStroke(unsigned char key, int x, int y)
 
 void CKeyBoard::TrackProcess(int key, int x, int y)
 {
+	auto pConditions = m_ProjManager->GetConditions();
+
 	auto pScene = m_ProjManager->GetScene();
 	auto pCurModel = pScene->GetCurModel();
 
 	auto pCenter = pCurModel->GetCenter();
 	auto pMinMaxXY = pCurModel->GetMinMaxModelRect(pCurModel->GetObjects2D());
-	
-	int dx1 =  pMinMaxXY.second.x - pCenter.first;
-	dx1 = abs(dx1);
-	
-	int dy1 = pCenter.second - pMinMaxXY.first.y;
-	dy1 = abs(dy1);
 
-	auto pCurPosition = pCurModel->GetCurPositionXY();
-	
+	auto RectForModelInTrack = pConditions->GetRectForCarInTrack();
 	double scaleX = pCurModel->GetScaleX();
 	double scaleY = pCurModel->GetScaleY();
 
-	int curX1 =  pCurPosition->x - (dx1*scaleX);
-	int curX2 = pCurPosition->x + (dx1*scaleX);
+	float lengthModelY = pMinMaxXY.second.x - pMinMaxXY.first.x;
+	float lengthModelX = pMinMaxXY.second.y - pMinMaxXY.first.y;
 
-	int curY1 = pCurPosition->y - (dy1*scaleY);
-	int curY2 = pCurPosition->y + (dy1*scaleY);
+	float NewLengthX = lengthModelX * scaleX;
+	float NewLengthY = lengthModelY * scaleY;
+
+	auto pCurPosition = pCurModel->GetCurPositionXY();
 	
-	auto pConditions = m_ProjManager->GetConditions();
-	std::list<double> lstLeftRightUpDoen = pConditions->GeteftRightUpBottom();
+	int curX2 = pCurPosition->x + NewLengthX / 2; 
+	int curY2 = pCurPosition->y + NewLengthY / 2;
+	
+	int curX1 = pCurPosition->x - NewLengthX / 2;
+	int curY1 = pCurPosition->y - NewLengthY / 2;
+
+	std::list<double> lstLeftRightUpDoen = pConditions->GetLeftRightUpBottom();
 	double left = lstLeftRightUpDoen.front();
 	lstLeftRightUpDoen.pop_front();
 	double right = lstLeftRightUpDoen.front();
@@ -147,9 +163,17 @@ void CKeyBoard::TrackProcess(int key, int x, int y)
 		{
 			if (curX1 > left)
 			{
-				pCurModel->SetOffset(fHorizontal, -offse);
+				if ((curX1 >= offse))
+				{
+					pCurModel->SetOffset(fHorizontal, -offse);
+				}
+				else
+				{
+					pCurModel->SetOffset(fHorizontal, -abs(curX1));
+				}
 				printf("GLUT_KEY_LEFT %d\n", key);
 			}
+
 			break;
 		}
 
@@ -157,7 +181,16 @@ void CKeyBoard::TrackProcess(int key, int x, int y)
 		{
 			if (curX2 < right)
 			{
-				pCurModel->SetOffset(fHorizontal, +offse);
+				if ((curX2 + offse) < right)
+				{
+					pCurModel->SetOffset(fHorizontal, +offse);
+				}
+				else
+				{
+					int dRX = 20;
+					pCurModel->SetOffset(fHorizontal, +(right - curX2) + dRX);
+				}
+
 				printf("GLUT_KEY_RIGHT %d\n", key);
 			}
 			break;
@@ -165,23 +198,39 @@ void CKeyBoard::TrackProcess(int key, int x, int y)
 
 		case 101:
 		{
-			if ((curY1- offse) > up)
+			if (curY1 > up)
 			{
-				pCurModel->SetOffset(fVertical, -offse);
-
-				printf("GLUT_KEY_UP %d\n", key);
+				if ((curY1 - offse) > up)
+				{
+					pCurModel->SetOffset(fVertical, -offse);
+				}
+				else
+				{
+					pCurModel->SetOffset(fVertical, -abs(curY1 - up));
+				}
 			}
+		
+			printf("GLUT_KEY_UP %d\n", key);
+
 			break;
 		}
 
 		case 103:
 		{
-			if ((curY2+ offse) < down)
+			if (curY2 < down)
 			{
-				pCurModel->SetOffset(fVertical, +offse);
-
+				if ((curY2 + offse) < down)
+				{
+					pCurModel->SetOffset(fVertical, +offse);
+				}
+				else
+				{
+					int move = up - (curY1 - offse);
+					pCurModel->SetOffset(fVertical, +(down - curY2));
+				}
 				printf("GLUT_KEY_DOWN %d\n", key);
 			}
+
 			break;
 		}
 	}

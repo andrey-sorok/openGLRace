@@ -106,7 +106,7 @@ public:
 	int GetCurLoopDrawTrack1() { return m_CurLoopDrawTrack1; };
 
 	void SetLeftRightUpBottom(double left, double right, double up, double down);
-	std::list<double> GeteftRightUpBottom();
+	std::list<double> GetLeftRightUpBottom();
 
 	void SetIsGenerate(bool IsGenerate) { m_IsGenerate = IsGenerate; };
 	bool GetIsGenerate() { return m_IsGenerate; };

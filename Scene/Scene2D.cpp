@@ -175,6 +175,17 @@ std::vector<std::shared_ptr<C2DGenModel>> CScene2D::GenerateTrack1Models()
 	return vRtnTrackModels;
 }
 
+void CScene2D::ClearCurModels()
+{
+	m_vCarsModels.clear();
+	m_vCarsModels.resize(0);
+	m_vCarsModels.shrink_to_fit();
+
+	m_vModels.clear();
+	m_vModels.resize(0);
+	m_vModels.shrink_to_fit();
+}
+
 CScene2D::CScene2D()
 {	
 }

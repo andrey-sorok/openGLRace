@@ -126,7 +126,7 @@ void render()
 
 void MousePassiveMotion(int x, int y)
 {
-	//pMouse->MousePassiveMotion(x, y);
+	pMouse->MousePassiveMotion(x, y);
 }
 
 int main(int argc, char* argv[]) 

@@ -135,9 +135,9 @@ void CMouse::MouseClick(int button, int state, int x, int y, bool& InIsMouseMove
 							m_pScene2D->GenerateCurdModel(pConditions->GetWINWIDTH(), pConditions->GetCerbHeight());
 
 							double left = 0.00;
-							double right = 400.00;
-							double up = 40.00;
-							double down = (pConditions->GetWINHEIGHT() - 50.00);
+							double right = (pConditions->GetWINWIDTH() / 2);//400.00;
+							double up = pConditions->GetCerbHeight();//40.00;
+							double down = (pConditions->GetWINHEIGHT() - pConditions->GetCerbHeight());// 50.00);
 							
 							pConditions->SetLeftRightUpBottom(left, right, up, down);
 							pConditions->SetCurGameState(Game);
@@ -233,10 +233,10 @@ void CMouse::MouseClick(int button, int state, int x, int y, bool& InIsMouseMove
 
 						m_pScene2D->GenerateCurdModel(pConditions->GetWINWIDTH(), pConditions->GetCerbHeight());
 
-						double left = 10.00;
-						double right = 400.00;
-						double up = 40.00;
-						double down = (pConditions->GetWINHEIGHT() - 50.00);
+						double left = 0.00;
+						double right = (pConditions->GetWINWIDTH() / 2); //400.00;
+						double up = pConditions->GetCerbHeight();//40.00;
+						double down = (pConditions->GetWINHEIGHT() - pConditions->GetCerbHeight());// 50.00);
 
 						pConditions->SetLeftRightUpBottom(left, right, up, down);
 						

@@ -570,6 +570,40 @@ void C2DRender::DrawTrack1()
 
 	float lengthModelX = MinMaxXYRect.second.x - MinMaxXYRect.first.x;
 	float lengthModelY = MinMaxXYRect.second.y - MinMaxXYRect.first.y;
+//__
+		
+	double oldScaleX = pCurModel->GetScaleX();
+	double oldScaleY = pCurModel->GetScaleY();
+	
+	auto pMinMaxXY = pCurModel->GetMinMaxModelRect(pCurModel->GetObjects2D());
+	
+	//float lengthModelY = pMinMaxXY.second.x - pMinMaxXY.first.x;
+	//float lengthModelX = pMinMaxXY.second.y - pMinMaxXY.first.y;
+
+	//float NewLengthX = RectForModelInTrack.lengthX * scaleX;
+	float NewLengthX = lengthModelY * oldScaleX;
+	float NewLengthY = lengthModelX * oldScaleY;
+
+	auto pCurPosition = pCurModel->GetCurPositionXY();
+
+	int curX2 = pCurPosition->x + NewLengthX / 2; //pCurPosition->x + (RectForModelInTrack.lengthX / 2);
+	int curY2 = pCurPosition->y + NewLengthY / 2; //pCurPosition->y + (RectForModelInTrack.lengthY / 2);
+
+	int curX1 = pCurPosition->x - NewLengthX / 2;
+	int curY1 = pCurPosition->y - NewLengthY / 2;
+
+	auto pLine1 = std::make_shared<CLine2D>(CPoint2D(curX1, curY1), CPoint2D(curX2, curY1), CColor3D(255, 0, 0));
+	auto pLine2 = std::make_shared<CLine2D>(CPoint2D(curX2, curY1), CPoint2D(curX2, curY2), CColor3D(255, 0, 0));
+
+	auto pLine3 = std::make_shared<CLine2D>(CPoint2D(curX2, curY2), CPoint2D(curX1, curY2), CColor3D(255, 0, 0));
+	auto pLine4 = std::make_shared<CLine2D>(CPoint2D(curX1, curY2), CPoint2D(curX1, curY1), CColor3D(255, 0, 0));
+	
+	Draw2DLine(pLine1.get());
+	Draw2DLine(pLine2.get());
+	Draw2DLine(pLine3.get());
+	Draw2DLine(pLine4.get());
+
+//__
 
 	float scaleX = (RectLengthXY.lengthX / lengthModelX);
 	float scaleY = (RectLengthXY.lengthY / lengthModelY);
