@@ -12,6 +12,8 @@
 #include "CoordTransform.h"
 #include "MyMath.h"
 
+#include "C2DModel.h"
+
 #include <algorithm>
 #include <memory>
 
@@ -412,4 +414,39 @@ bool CManagerFigure::RemoveAllSelectFigures(std::vector<CFigureBase*>& Objects2D
 	vSelectObjects.resize(0);
 	vSelectObjects.shrink_to_fit();
 	return true;
+}
+
+std::list<int> CManagerFigure::GetChengedCarRect(std::shared_ptr<C2DModel> pCurModel)
+{
+	auto pConditions = m_pConditions;
+
+	auto pCenter = pCurModel->GetCenter();
+	auto pMinMaxXY = pCurModel->GetMinMaxModelRect(pCurModel->GetObjects2D());
+
+	auto RectForModelInTrack = pConditions->GetRectForCarInTrack();
+	double scaleX = pCurModel->GetScaleX();
+	double scaleY = pCurModel->GetScaleY();
+
+	float lengthModelY = pMinMaxXY.second.x - pMinMaxXY.first.x;
+	float lengthModelX = pMinMaxXY.second.y - pMinMaxXY.first.y;
+
+	float NewLengthX = lengthModelX * scaleX;
+	float NewLengthY = lengthModelY * scaleY;
+
+	auto pCurPosition = pCurModel->GetCurPositionXY();
+
+	int curX2 = pCurPosition->x + NewLengthX / 2;
+	int curY2 = pCurPosition->y + NewLengthY / 2;
+
+	int curX1 = pCurPosition->x - NewLengthX / 2;
+	int curY1 = pCurPosition->y - NewLengthY / 2;
+
+	std::list<int> rtnLst;
+	rtnLst.push_back(curX1);
+	rtnLst.push_back(curY1);
+
+	rtnLst.push_back(curX2);
+	rtnLst.push_back(curY2);
+
+	return rtnLst;
 }

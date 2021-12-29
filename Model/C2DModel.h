@@ -15,8 +15,8 @@ class C2DModel
 {
 protected:
 	std::list<std::shared_ptr<CFigureBase>> m_Objects2D;
-
-	int m_iP;
+	//Итентификатор
+	eModelType m_iP;
 	
 	CPoint2D* m_CurPositionXY;
 
@@ -26,7 +26,7 @@ protected:
 	CPoint2D* m_MaxXY;
 
 	CPoint2D* m_OffsetXY;
-
+	//Масштаб
 	double m_ScaleX;
 	double m_ScaleY;
 
@@ -36,9 +36,9 @@ protected:
 
 public:
 	//C2DModel();
-	~C2DModel();
+	virtual ~C2DModel();
 
-	C2DModel(std::vector<std::shared_ptr<CFigureBase>> InFigureModel);
+	C2DModel(eModelType InModelType, std::vector<std::shared_ptr<CFigureBase>> InFigureModel);
 
 	void Add2Objects2D(std::shared_ptr<CFigureBase> InObj2D);
 	std::list<std::shared_ptr<CFigureBase>>& GetObjects2D() { return m_Objects2D; };
@@ -53,7 +53,8 @@ public:
 
 	std::pair<CPoint2D, CPoint2D> GetMinMaxRectXY();
 
-	void SetiP(int IniP) { m_iP = IniP; };
+	void SetiP(eModelType IniP) { m_iP = IniP; };
+	eModelType GetiP() { return m_iP; };
 
 	void SetOffset(EDirect InDirect,  float d);
 	CPoint2D* GetOffset() { return m_OffsetXY; };

@@ -149,6 +149,7 @@ CPoint2D CTriangle2D::GetLineItersect(const CPoint2D line1P1, const CPoint2D lin
 	{
 		return CPoint2D(0, 0);
 	}
+
 	return CPoint2D(x, y);
 }
 
@@ -298,4 +299,14 @@ bool CTriangle2D::CheckInWindow(int InCondition, bool IsUp, CPoint2D InCenterXY,
 	}
 
 	return false;
+}
+
+std::pair<CPoint2D, CPoint2D> CTriangle2D::GetDescribedRect()
+{
+	CPoint2D p1(m_P3.x, m_P1.y);
+	CPoint2D p2(m_P2.x, m_P2.y);
+
+	auto Pair = std::make_pair(p1, p2);
+
+	return Pair;
 }

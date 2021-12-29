@@ -32,7 +32,10 @@ CCondition::CCondition()
 	m_RectForCarInTrack.lengthX = 100;
 	m_RectForCarInTrack.lengthY = 100;
 
-	m_CurLoopDrawTrack1 = 0;
+	m_CurGameTime = 60000;
+	m_NumTrackIntervals = 3;
+	m_IntervalLength = m_CurGameTime / m_NumTrackIntervals;
+	m_MaxTrackObj = 5;
 
 	m_Left = 0.00;
 	m_Right = 0.00;
@@ -40,6 +43,8 @@ CCondition::CCondition()
 	m_Down = 0.00;
 
 	m_IsGenerate = false;
+
+	m_Offset = 20.00;
 }
 
 

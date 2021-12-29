@@ -22,7 +22,9 @@ public:
 	void KeyStroke(unsigned char key, int x, int y);
 
 private:
+
 	void TrackProcess(int key, int x, int y);
+
 };
 
 #endif //__KEYBOARD_

@@ -45,6 +45,8 @@ public:
 	*/
 	bool CheckInWindow(int InCondition, bool IsUp, CPoint2D InCenterXY, int InWinWidth, int InWinHeight);
 
+	std::pair<CPoint2D, CPoint2D> GetDescribedRect();
+
 };
 
 #endif //__TRIANGLE2D_

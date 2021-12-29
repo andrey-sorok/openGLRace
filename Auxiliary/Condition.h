@@ -41,7 +41,10 @@ private:
 
 	RectForCarInTrack m_RectForCarInTrack;
 
-	int m_CurLoopDrawTrack1;
+	int m_CurGameTime;
+	int m_NumTrackIntervals;
+	int m_IntervalLength;
+	int m_MaxTrackObj;
 
 	double m_Left;
 	double m_Right;
@@ -53,6 +56,8 @@ private:
 	std::vector<std::vector<std::pair<CPoint2D, CPoint2D>>> vOutModelsGreed;
 
 	bool m_IsGenerate;
+
+	float m_Offset;
 
 public:
 	CCondition();
@@ -102,8 +107,16 @@ public:
 
 	int GetCerbHeight() { return m_CerbHeight; };
 
-	void SetCurLoopDrawTrack1(int InCurLoopDrawTrack) { m_CurLoopDrawTrack1 = InCurLoopDrawTrack; };
-	int GetCurLoopDrawTrack1() { return m_CurLoopDrawTrack1; };
+	void SetCurGameTime(int InCurGameTime) { m_CurGameTime = InCurGameTime; };
+	int GetCurGameTime() { return m_CurGameTime; };
+	
+	//void SetNumTrackIntervals(int InNumTrackIntervals) { m_NumTrackIntervals = InNumTrackIntervals; };
+	int GetNumTrackIntervals() { return m_NumTrackIntervals; };
+	
+	int GetIntervalLength() { return m_IntervalLength; };
+
+	void SetMaxTrackObj(int InMaxTrackObj) { m_MaxTrackObj = InMaxTrackObj; };
+	int GetMaxTrackObj() { return m_MaxTrackObj; };
 
 	void SetLeftRightUpBottom(double left, double right, double up, double down);
 	std::list<double> GetLeftRightUpBottom();
@@ -112,6 +125,9 @@ public:
 	bool GetIsGenerate() { return m_IsGenerate; };
 
 	RectForCarInTrack GetRectForCarInTrack() {  return m_RectForCarInTrack; };
+
+	void SetCarOffset(bool IsOffset) { m_Offset = IsOffset; };
+	float GetCarOffset() { return m_Offset; };
 	
 };
 

@@ -15,7 +15,7 @@ C2DModel::~C2DModel()
 {
 }
 
-C2DModel::C2DModel(std::vector<std::shared_ptr<CFigureBase>> InFigureModel)
+C2DModel::C2DModel(eModelType InModelType, std::vector<std::shared_ptr<CFigureBase>> InFigureModel)
 {
 	m_OffsetXY = new CPoint2D(0, 0);
 	m_MinXY = new CPoint2D(0, 0);
@@ -28,7 +28,7 @@ C2DModel::C2DModel(std::vector<std::shared_ptr<CFigureBase>> InFigureModel)
 	m_ScaleX = 0.00;	
 	m_ScaleY = 0.00;
 
-	m_iP = 0;
+	m_iP = InModelType;
 
 	m_LenghtModel = 0;
 

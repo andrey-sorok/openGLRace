@@ -32,6 +32,9 @@
 #include <vector>
 #include <memory>
 
+
+#include <time.h> // нужен для вызова функции time()
+
 using namespace std;
 
 //Global_VAR
@@ -131,6 +134,8 @@ void MousePassiveMotion(int x, int y)
 
 int main(int argc, char* argv[]) 
 {
+	srand(time(NULL));
+
 	m_OrthoMaxX = 50;
 	m_OrthoMinX = -50;
 	m_OrthoMaxY = 50;

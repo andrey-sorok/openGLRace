@@ -35,6 +35,17 @@ enum EDirect
 	fVertical,			//1
 };
 
+enum eModelType
+{
+	mCar,			//0
+	m—urb,			//1
+	mRect,			//2
+	mCycle,			//3
+	mTriangle,		//4
+	m—omposite,		//5
+};
+
+
 enum fileAccess { in, out, inout };
 
 struct RectForCarInTrack

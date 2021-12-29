@@ -29,6 +29,10 @@ public:
 
 	std::vector<std::vector<std::pair<CPoint2D, CPoint2D>>> CreateOutGreed(int InNumModels, int WinWidth, int WinHeight);
 
+	bool IsRectIntersection(std::pair<CPoint2D, CPoint2D> InRect1, std::pair<CPoint2D, CPoint2D> InRect2);
+
+	int GenerateRandomValueInRange(int InMin, int InMax);
+
 private:
 	std::vector<std::vector<std::pair<CPoint2D, CPoint2D>>> CalcGreed(int WidthCell, int HeightRow, int rows, int cols);
 

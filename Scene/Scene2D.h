@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <memory>
+#include <tuple>
 
 #include "Types.h"
 #include "Color3D.h"
@@ -36,11 +37,15 @@ private:
 	std::shared_ptr<C2DModel> m_CurTrackModel;
 
 	std::vector<std::shared_ptr<C2DGenModel>> m_Ttrack1Models;
+
+	int m_MaxTrackObjSpeed;
+	int m_TimeAfter;
 	
 //End_Track
 
 private:
-
+	std::vector<std::shared_ptr<C2DGenModel>> Generate(int winWight, int winHeightint,
+		int InNumObjectsGenerate, int InMaxTrackObj);
 
 public:
 	CScene2D();
@@ -80,9 +85,13 @@ public:
 
 	std::shared_ptr<C2DModel> GetCurb() { return m_Ñurb; };
 
-	std::vector<std::shared_ptr<C2DGenModel>> GenerateTrack1Models();
-	void SeTrack1Models(std::vector<std::shared_ptr<C2DGenModel>> InTtrack1Models) { m_Ttrack1Models = InTtrack1Models; };
-	std::vector<std::shared_ptr<C2DGenModel>> GetTrack1Models() { return m_Ttrack1Models; };
+	std::vector<std::shared_ptr<C2DGenModel>> GenerateTrack1Models(int winWight, int winHeight,
+		std::tuple<int, int, int, int> InTrackTimeNumIntervalsOneTimreIntervalMaxCurLtrackObjects);
+
+	void SetTrack1Models(std::vector<std::shared_ptr<C2DGenModel>> InTtrack1Models) { m_Ttrack1Models = InTtrack1Models; };
+	std::vector<std::shared_ptr<C2DGenModel>>& GetTrack1Models() { return m_Ttrack1Models; };
+
+	int GetMaxTrackObjSpeed() { return m_MaxTrackObjSpeed; };
 
 	void ClearCurModels();
 

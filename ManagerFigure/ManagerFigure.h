@@ -6,9 +6,12 @@
 
 #include <vector>
 #include <memory>
+#include <list>
 
 class CSelector;
 class CCondition;
+
+class C2DModel;
 
 class CManagerFigure
 {
@@ -50,6 +53,8 @@ public:
 	bool SetNewScale(bool IsUp);
 
 	bool RemoveAllSelectFigures(std::vector<CFigureBase*>& Objects2D);
+
+	std::list<int> GetChengedCarRect(std::shared_ptr<C2DModel> pCurModel);
 };
 
 #endif //__MANAGERFIGURE_

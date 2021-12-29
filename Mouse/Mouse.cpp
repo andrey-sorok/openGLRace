@@ -74,7 +74,7 @@ void CMouse::MouseClick(int button, int state, int x, int y, bool& InIsMouseMove
 					GameState ChangeState = m_pScene2D->CheckStartMenuClick(p);
 					pConditions->SetCurGameState(ChangeState);
 
-					if (ChangeState == Choice)
+					if (ChangeState == Choice)//choice exictence car
 					{
 						auto pBinFile = std::make_unique<CBinFile>();
 						std::vector<std::string> vPathToModelsFiles = pBinFile->ReadNamesFiles("Cars");
@@ -101,7 +101,7 @@ void CMouse::MouseClick(int button, int state, int x, int y, bool& InIsMouseMove
 						for (int iModel = 0; iModel < NumModels; ++iModel)
 						{
 							std::vector<std::shared_ptr<CFigureBase>> vFirstModel = m_pScene2D->GetCarModels()[iModel];
-							auto pC2DModel1 = std::make_shared<C2DModel>(vFirstModel);
+							auto pC2DModel1 = std::make_shared<C2DModel>(mCar, vFirstModel);
 							m_pScene2D->AddModel(pC2DModel1);
 						}
 					//__
@@ -125,7 +125,7 @@ void CMouse::MouseClick(int button, int state, int x, int y, bool& InIsMouseMove
 							std::vector<std::vector<std::shared_ptr<CFigureBase>>> CurModels = m_pScene2D->GetCarModels();
 							std::vector<std::shared_ptr<CFigureBase>> Model = CurModels[first];
 							
-							auto pModel = std::make_shared<C2DModel>(Model);
+							auto pModel = std::make_shared<C2DModel>(mCar, Model);
 							
 							m_pScene2D->AddModel(pModel);
 
@@ -140,6 +140,7 @@ void CMouse::MouseClick(int button, int state, int x, int y, bool& InIsMouseMove
 							double down = (pConditions->GetWINHEIGHT() - pConditions->GetCerbHeight());// 50.00);
 							
 							pConditions->SetLeftRightUpBottom(left, right, up, down);
+							//pConditions->SetCurGameTime(30000);
 							pConditions->SetCurGameState(Game);
 
 						}
@@ -217,9 +218,6 @@ void CMouse::MouseClick(int button, int state, int x, int y, bool& InIsMouseMove
 				
 				case Game:
 				{
-
-					int i = 0;
-					++i;
 					break;
 				}
 				
@@ -239,7 +237,7 @@ void CMouse::MouseClick(int button, int state, int x, int y, bool& InIsMouseMove
 						double down = (pConditions->GetWINHEIGHT() - pConditions->GetCerbHeight());// 50.00);
 
 						pConditions->SetLeftRightUpBottom(left, right, up, down);
-						
+						//pConditions->SetCurGameTime(30000);
 						pConditions->SetCurGameState(Game);
 					}
 					

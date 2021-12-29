@@ -13,6 +13,8 @@
 #include <algorithm>
 #include <memory>
 
+#include <stdlib.h> // нужен для вызова функций rand(), srand()
+
 CMyMath::CMyMath()
 {
 }
@@ -144,50 +146,50 @@ bool CMyMath::ChecRectDescribed(CFigureBase * InUpObj1, CFigureBase * InUpObj2)
 		}
 	};
 
-	auto LMDIsRectsIntersect = [](std::pair<CPoint2D, CPoint2D> InRect1, std::pair<CPoint2D, CPoint2D> InRect2)
-	{
-		//P1
-		if ((InRect1.first.x <= InRect2.first.x) && (InRect1.second.x >= InRect2.first.x)
-			&& ((InRect1.first.y <= InRect2.first.y) && (InRect1.second.y >= InRect2.first.y)))
-		{
-			return true;
-		}
+	//auto LMDIsRectsIntersect = [](std::pair<CPoint2D, CPoint2D> InRect1, std::pair<CPoint2D, CPoint2D> InRect2)
+	//{
+	//	//P1
+	//	if ((InRect1.first.x <= InRect2.first.x) && (InRect1.second.x >= InRect2.first.x)
+	//		&& ((InRect1.first.y <= InRect2.first.y) && (InRect1.second.y >= InRect2.first.y)))
+	//	{
+	//		return true;
+	//	}
 
-		//P3
-		if ((InRect1.first.x <= InRect2.second.x) && (InRect1.second.x >= InRect2.second.x)
-			&& ((InRect1.first.y <= InRect2.second.y) && (InRect1.second.y >= InRect2.second.y)))
-		{
-			return true;
-		}
+	//	//P3
+	//	if ((InRect1.first.x <= InRect2.second.x) && (InRect1.second.x >= InRect2.second.x)
+	//		&& ((InRect1.first.y <= InRect2.second.y) && (InRect1.second.y >= InRect2.second.y)))
+	//	{
+	//		return true;
+	//	}
 
-		auto pRect = std::make_unique<CRect2D>();
-		//auto P2P4Rect1 = pRect->GetP2P4(InRect1.first, InRect1.second);
-		auto P2P4Rect2 = pRect->GetP2P4(InRect2.first, InRect2.second);
+	//	auto pRect = std::make_unique<CRect2D>();
+	//	//auto P2P4Rect1 = pRect->GetP2P4(InRect1.first, InRect1.second);
+	//	auto P2P4Rect2 = pRect->GetP2P4(InRect2.first, InRect2.second);
 
-		//P2
-		if ((InRect1.first.x <= P2P4Rect2.first.x) && (InRect1.second.x >= P2P4Rect2.first.x)
-			&& ((InRect1.first.y <= P2P4Rect2.first.y) && (InRect1.second.y >= P2P4Rect2.first.y)))
-		{
-			return true;
-		}
-		
-		//P4
-		if ((InRect1.first.x <= P2P4Rect2.second.x) && (InRect1.second.x >= P2P4Rect2.second.x)
-			&& ((InRect1.first.y <= P2P4Rect2.second.y) && (InRect1.second.y >= P2P4Rect2.second.y)))
-		{
-			return true;
-		}
+	//	//P2
+	//	if ((InRect1.first.x <= P2P4Rect2.first.x) && (InRect1.second.x >= P2P4Rect2.first.x)
+	//		&& ((InRect1.first.y <= P2P4Rect2.first.y) && (InRect1.second.y >= P2P4Rect2.first.y)))
+	//	{
+	//		return true;
+	//	}
+	//	
+	//	//P4
+	//	if ((InRect1.first.x <= P2P4Rect2.second.x) && (InRect1.second.x >= P2P4Rect2.second.x)
+	//		&& ((InRect1.first.y <= P2P4Rect2.second.y) && (InRect1.second.y >= P2P4Rect2.second.y)))
+	//	{
+	//		return true;
+	//	}
 
-		return false;
-	};
+	//	return false;
+	//};
 
 	auto Rect1 = LMDGetRect(InUpObj1);
 	auto Rect2 = LMDGetRect(InUpObj2);
 
-	if (LMDIsRectsIntersect(Rect1, Rect2))
+	if (IsRectIntersection(Rect1, Rect2))//LMDIsRectsIntersect(Rect1, Rect2))
 		return true;
 
-	if (LMDIsRectsIntersect(Rect2, Rect1))
+	if (IsRectIntersection(Rect2, Rect1))//LMDIsRectsIntersect(Rect2, Rect1))
 		return true;
 
 	return false;
@@ -320,6 +322,55 @@ std::vector<std::vector<std::pair<CPoint2D, CPoint2D>>> CMyMath::CreateOutGreed(
 	std::vector<std::vector<std::pair<CPoint2D, CPoint2D>>> rtnGreed = CalcGreed(CellWidth, RowHeight, rows, cols);
 
 	return rtnGreed;
+}
+
+bool CMyMath::IsRectIntersection(std::pair<CPoint2D, CPoint2D> InRect1, std::pair<CPoint2D, CPoint2D> InRect2)
+{
+
+	//P1
+	if ((InRect1.first.x <= InRect2.first.x) && (InRect1.second.x >= InRect2.first.x)
+		&& ((InRect1.first.y <= InRect2.first.y) && (InRect1.second.y >= InRect2.first.y)))
+	{
+		return true;
+	}
+
+	//P3
+	if ((InRect1.first.x <= InRect2.second.x) && (InRect1.second.x >= InRect2.second.x)
+		&& ((InRect1.first.y <= InRect2.second.y) && (InRect1.second.y >= InRect2.second.y)))
+	{
+		return true;
+	}
+
+	auto pRect = std::make_unique<CRect2D>();
+	//auto P2P4Rect1 = pRect->GetP2P4(InRect1.first, InRect1.second);
+	auto P2P4Rect2 = pRect->GetP2P4(InRect2.first, InRect2.second);
+
+	//P2
+	if ((InRect1.first.x <= P2P4Rect2.first.x) && (InRect1.second.x >= P2P4Rect2.first.x)
+		&& ((InRect1.first.y <= P2P4Rect2.first.y) && (InRect1.second.y >= P2P4Rect2.first.y)))
+	{
+		return true;
+	}
+
+	//P4
+	if ((InRect1.first.x <= P2P4Rect2.second.x) && (InRect1.second.x >= P2P4Rect2.second.x)
+		&& ((InRect1.first.y <= P2P4Rect2.second.y) && (InRect1.second.y >= P2P4Rect2.second.y)))
+	{
+		return true;
+	}
+
+	return false;
+}
+
+int CMyMath::GenerateRandomValueInRange(int InMin, int InMax)
+{
+	// Установить генератор случайных чисел
+	//srand(time(NULL));
+
+	// Получить случайное число - формула
+	int num = rand() % (InMax - InMin) + InMin;
+
+	return num;
 }
 
 std::vector<std::vector<std::pair<CPoint2D, CPoint2D>>> CMyMath::CalcGreed(int WidthCell, int HeightRow, int rows, int cols)

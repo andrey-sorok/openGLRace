@@ -2,6 +2,7 @@
 #define __2DRENDER_
 
 #include <vector>
+#include <functional>
 
 #include "OpenGLRender.h"
 #include "ManagerFigure.h"
@@ -18,6 +19,7 @@ class CLine2D;
 
 class CScene2D;
 class C2DModel;
+class C2DGenModel;
 
 class C2DRender :public COpenGLRender
 {
@@ -29,7 +31,6 @@ private:
 	void DrawCurrenFigure(EFigure InCurFigure, CColor3D InColor);
 
 	void renderSpacedBitmapString(float x, float y, int spacing, void *font, char *string);
-
 
 public:
 	C2DRender();
@@ -63,8 +64,18 @@ private:
 
 	void DrawTrack1Objects();
 	void DrawTrack1();
-	void GeneRateCerb(std::shared_ptr<C2DModel> InModel);
+	void DrawCarModelTrack1();
+	void DrawCerbTracl1(std::shared_ptr<C2DModel> InModel);
 
+	void CheckEncounters(std::shared_ptr<C2DModel> pCurModel);
+	void CheckOuthOfViewObjectsTrack1();
+
+	void ReloadLevel(TrackState InTrack);
+
+	void RectBehaviour(std::shared_ptr<C2DGenModel> InModel);
+	void CycleBehaviour(std::shared_ptr<C2DGenModel> InModel);
+	void TrianBehavior(std::shared_ptr<C2DGenModel> InModel);
+	
 };
 
 #endif //__2DRENDER_

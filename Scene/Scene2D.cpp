@@ -12,6 +12,11 @@
 #include "C2DModel.h"
 #include "C2DGenModel.h"
 
+#include "CycleProperty.h"
+#include "TriangleProperty.h"
+
+#include "MyMath.h"
+
 #include <memory>
 
 std::vector<std::shared_ptr<CFigureBase>> CScene2D::GetLeftSideBarObj()
@@ -115,62 +120,111 @@ void CScene2D::GenerateCurdModel(int WinWidth, int InCerbHeight)
 	CColor3D colorBlack(0, 0, 0);
 	std::vector<std::shared_ptr<CFigureBase>> Objects2D;
 	//0
-	curPosX = -numCurb;
+	/*curPosX = -numCurb;
 	auto pRect0 = std::make_shared<CRect2D>(CPoint2D(static_cast<float>(-curPosX), 0), CPoint2D(static_cast<float>(curPosX + numCurb), static_cast<float>(InCerbHeight)), colorWhite);
-	Objects2D.emplace_back(pRect0);
+	Objects2D.emplace_back(pRect0);*/
 	//1
-	auto pRect1 = std::make_shared<CRect2D>(CPoint2D(static_cast<float>(curPosX), 0), CPoint2D(static_cast<float>(curPosX + numCurb), static_cast<float>(InCerbHeight)), colorWhite);
+	auto pRect1 = std::make_shared<CRect2D>(CPoint2D(static_cast<float>(curPosX), 0), 
+		CPoint2D(static_cast<float>(curPosX + numCurb), static_cast<float>(InCerbHeight)), colorWhite);
 	Objects2D.emplace_back(pRect1);
-	//m_Сurb->Add2Objects2D(pRect1);
 	//2
 	curPosX += numCurb;
-	auto pRect2 = std::make_shared<CRect2D>(CPoint2D(static_cast<float>(curPosX), 0), CPoint2D(static_cast<float>(curPosX + numCurb), static_cast<float>(InCerbHeight)), colorBlack);
-	//m_Сurb->Add2Objects2D(pRect2);
+	auto pRect2 = std::make_shared<CRect2D>(CPoint2D(static_cast<float>(curPosX), 0), 
+		CPoint2D(static_cast<float>(curPosX + numCurb), static_cast<float>(InCerbHeight)), colorBlack);
 	Objects2D.emplace_back(pRect2);
 	//3
 	curPosX += numCurb;
-	auto pRect3 = std::make_shared<CRect2D>(CPoint2D(static_cast<float>(curPosX), 0), CPoint2D(static_cast<float>(curPosX + numCurb), static_cast<float>(InCerbHeight)), colorWhite);
-	//m_Сurb->Add2Objects2D(pRect3);
+	auto pRect3 = std::make_shared<CRect2D>(CPoint2D(static_cast<float>(curPosX), 0), 
+		CPoint2D(static_cast<float>(curPosX + numCurb), static_cast<float>(InCerbHeight)), colorWhite);
 	Objects2D.emplace_back(pRect3);
 	//4
 	curPosX += numCurb;
-	auto pRect4 = std::make_shared<CRect2D>(CPoint2D(static_cast<float>(curPosX), 0), CPoint2D(static_cast<float>(curPosX + numCurb), static_cast<float>(InCerbHeight)), colorBlack);
+	auto pRect4 = std::make_shared<CRect2D>(CPoint2D(static_cast<float>(curPosX), 0), 
+		CPoint2D(static_cast<float>(curPosX + numCurb), static_cast<float>(InCerbHeight)), colorBlack);
 	Objects2D.emplace_back(pRect4);
 	//m_Сurb->Add2Objects2D(pRect4);
 	//5
 	curPosX += numCurb;
-	auto pRect5 = std::make_shared<CRect2D>(CPoint2D(static_cast<float>(curPosX), 0), CPoint2D(static_cast<float>(curPosX + numCurb), static_cast<float>(InCerbHeight)), colorWhite);
+	auto pRect5 = std::make_shared<CRect2D>(CPoint2D(static_cast<float>(curPosX), 0), 
+		CPoint2D(static_cast<float>(curPosX + numCurb), static_cast<float>(InCerbHeight)), colorWhite);
 	Objects2D.emplace_back(pRect5);
 	//m_Сurb->Add2Objects2D(pRect5);
+	
+	
 	//6
 	curPosX += numCurb;
-	auto pRect6 = std::make_shared<CRect2D>(CPoint2D(static_cast<float>(curPosX), 0), CPoint2D(static_cast<float>(curPosX + numCurb), static_cast<float>(InCerbHeight)), colorBlack);
+	auto pRect6 = std::make_shared<CRect2D>(CPoint2D(static_cast<float>(curPosX), 0), 
+		CPoint2D(static_cast<float>(curPosX + numCurb), static_cast<float>(InCerbHeight)), colorBlack);
 	Objects2D.emplace_back(pRect6);
-	//7
+	//////7
 	curPosX += numCurb;
-	auto pRect7 = std::make_shared<CRect2D>(CPoint2D(static_cast<float>(curPosX), 0), CPoint2D(static_cast<float>(curPosX + numCurb), static_cast<float>(InCerbHeight)), colorWhite);
+	auto pRect7 = std::make_shared<CRect2D>(CPoint2D(static_cast<float>(curPosX), 0), 
+		CPoint2D(static_cast<float>(curPosX + numCurb), static_cast<float>(InCerbHeight)), colorWhite);
 	Objects2D.emplace_back(pRect7);
+	
+	
+	//8
+	curPosX += numCurb;
+	auto pRect8 = std::make_shared<CRect2D>(CPoint2D(static_cast<float>(curPosX), 0),
+		CPoint2D(static_cast<float>(curPosX + numCurb), static_cast<float>(InCerbHeight)), colorBlack);
+	Objects2D.emplace_back(pRect8);
+	//9
+	curPosX += numCurb;
+	auto pRect9 = std::make_shared<CRect2D>(CPoint2D(static_cast<float>(curPosX), 0),
+		CPoint2D(static_cast<float>(curPosX + numCurb), static_cast<float>(InCerbHeight)), colorWhite);
+	Objects2D.emplace_back(pRect9);
 
-	m_Сurb = std::make_shared<C2DModel>(Objects2D);
+	//10
+	curPosX += numCurb;
+	auto pRect10 = std::make_shared<CRect2D>(CPoint2D(static_cast<float>(curPosX), 0),
+		CPoint2D(static_cast<float>(curPosX + numCurb), static_cast<float>(InCerbHeight)), colorBlack);
+	Objects2D.emplace_back(pRect10);
+	//11
+
+	//12
+
+	m_Сurb = std::make_shared<C2DModel>(mСurb, Objects2D);
 	curPosX += numCurb;
 	m_Сurb->SetLenghtModel(curPosX);
 }
 
-std::vector<std::shared_ptr<C2DGenModel>> CScene2D::GenerateTrack1Models()
+std::vector<std::shared_ptr<C2DGenModel>> CScene2D::GenerateTrack1Models(int winWight, int winHeight,
+	std::tuple<int, int, int, int> InTrackTimeNumIntervalsOneTimreIntervalMaxCurLtrackObjects)
 {
 	std::vector<std::shared_ptr<C2DGenModel>> vRtnTrackModels;
 
-	//ввести время генерации  и рандомизатор типа модели
+//	//ввести время генерации  
+//	//рандомизатор типа модели
+//	//рандомизатор начальной позиции
+//	//рандомизатор скорости
+//	//рандомизатор скорости
 
-	auto pRect = std::make_shared<CRect2D>(CPoint2D(0, 0), CPoint2D(50, 50), CColor3D(255, 0, 0));
-	//auto pTrian = std::make_shared<CTriangle2D>(CPoint2D(30, 0), CPoint2D(-30, 30), CPoint2D(30, 30),CColor3D(255, 255, 0));
-
-	std::vector<std::shared_ptr<CFigureBase>> InFigureModel;
-	InFigureModel.emplace_back(pRect);
-	//InFigureModel.emplace_back(pTrian);
-
-	auto pModel = std::make_shared<C2DGenModel>(InFigureModel);
-	vRtnTrackModels.emplace_back(pModel);
+	int InTrackTime = 0;
+	int NumInterval = 0;
+	int OneTimreInterval = 0;
+	int MaxTrackObj = 0;
+	
+	std::tie(InTrackTime, NumInterval, OneTimreInterval, MaxTrackObj) = InTrackTimeNumIntervalsOneTimreIntervalMaxCurLtrackObjects;
+	
+	if ((InTrackTime > 0) && (InTrackTime < OneTimreInterval))//firs Time interval
+	{
+		//Rects++Triangles+Cycels
+		int numberObjectsGenerate = 2;
+		vRtnTrackModels = Generate(winWight, winHeight, numberObjectsGenerate, MaxTrackObj);
+	}
+	else if ((InTrackTime > OneTimreInterval) && (InTrackTime < (OneTimreInterval * 2)))//second Time interval
+	{
+		//Rects++Triangles
+		int numberObjectsGenerate = 1;
+		vRtnTrackModels = Generate(winWight, winHeight, numberObjectsGenerate, MaxTrackObj);
+	}
+	else if ((InTrackTime > (OneTimreInterval * 2)) && (InTrackTime <= (OneTimreInterval * 3)))// third Time interval
+	{
+		//Rects
+		int numberObjectsGenerate = 0;
+		vRtnTrackModels = Generate(winWight, winHeight, numberObjectsGenerate, MaxTrackObj);
+		
+	}
 
 	return vRtnTrackModels;
 }
@@ -184,10 +238,173 @@ void CScene2D::ClearCurModels()
 	m_vModels.clear();
 	m_vModels.resize(0);
 	m_vModels.shrink_to_fit();
+
+	m_Ttrack1Models.clear();
+	m_Ttrack1Models.resize(0);
+	m_Ttrack1Models.shrink_to_fit();
+}
+
+std::vector<std::shared_ptr<C2DGenModel>> CScene2D::Generate(int winWight, int winHeight,
+	int InNumObjectsGenerate, int InMaxTrackObj)
+{
+	std::vector<std::shared_ptr<C2DGenModel>> rtnVecModels;
+
+	auto mMath = std::make_unique<CMyMath>();
+	int numGenObj = mMath->GenerateRandomValueInRange(1, InMaxTrackObj);
+
+	switch (InNumObjectsGenerate)
+	{
+		case 0:
+		{
+			for (int iFigure = 0; iFigure < numGenObj; ++iFigure)
+			{
+				eModelType modType = mRect;
+
+				auto pRect = std::make_shared<CRect2D>(CPoint2D(0, 0), CPoint2D(50, 50), CColor3D(255, 0, 0));
+
+				std::vector<std::shared_ptr<CFigureBase>> InFigureModels;
+				InFigureModels.emplace_back(pRect);
+
+				auto pModel = std::make_shared<C2DGenModel>(modType, InFigureModels);
+				CPoint2D* CurPosXY = pModel->GetCurPositionXY();
+				
+				int margin = 25 + 50;
+				CurPosXY->y = mMath->GenerateRandomValueInRange(25, winHeight - margin);
+
+				auto pRectProp = dynamic_cast<CProperty2DModel*>(pModel->GetProperty().get());
+				
+				int speed = mMath->GenerateRandomValueInRange(1, m_MaxTrackObjSpeed);
+				int timeAfter = mMath->GenerateRandomValueInRange(0, m_TimeAfter);
+
+				pRectProp->SetSpeed(speed);
+				pRectProp->SetShowAfterTime(timeAfter);
+				
+				rtnVecModels.emplace_back(pModel);
+			}
+			break;
+		}
+
+		case 1:
+		{
+			for (int iFigure = 0; iFigure < numGenObj; ++iFigure) 
+			{
+				int intType = mMath->GenerateRandomValueInRange((int)mRect, (int)mTriangle );
+				eModelType modType = static_cast<eModelType>(intType);
+
+				if (modType == mRect)
+				{
+					auto pRect = std::make_shared<CRect2D>(CPoint2D(0, 0), CPoint2D(50, 50), CColor3D(255, 0, 0));
+
+					std::vector<std::shared_ptr<CFigureBase>> InFigureModels;
+					InFigureModels.emplace_back(pRect);
+
+					auto pModel = std::make_shared<C2DGenModel>(modType, InFigureModels);
+					auto pRectProp = dynamic_cast<CProperty2DModel*>(pModel->GetProperty().get());
+
+					int speed = mMath->GenerateRandomValueInRange(1, m_MaxTrackObjSpeed);
+					int timeAfter = mMath->GenerateRandomValueInRange(0, m_TimeAfter);
+
+					pRectProp->SetSpeed(speed);
+					pRectProp->SetShowAfterTime(timeAfter);
+
+					rtnVecModels.emplace_back(pModel);
+				}
+				else if (modType == mTriangle)
+				{
+					modType = mTriangle;
+
+					auto pTrian = std::make_shared<CTriangle2D>(CPoint2D(0, -20), CPoint2D(0, 20), CPoint2D(-20, 0), CColor3D(255, 255, 255));
+					
+					std::vector<std::shared_ptr<CFigureBase>> InFigureModels;
+					InFigureModels.emplace_back(pTrian);
+
+					auto pModel = std::make_shared<C2DGenModel>(modType, InFigureModels);
+
+					auto pCTrianProp = dynamic_cast<CTriangleProperty*>(pModel->GetProperty().get());
+					pCTrianProp->SetSpeed(5);
+					pCTrianProp->SetIsUp(true);
+
+					rtnVecModels.emplace_back(pModel);
+				}
+
+			}
+
+			break;
+		}
+
+		case 2:
+		{
+			int intType = mMath->GenerateRandomValueInRange((int)mRect, (int)mTriangle);
+			eModelType modType = static_cast<eModelType>(intType);
+
+			if (modType == mRect)
+			{
+				auto pRect = std::make_shared<CRect2D>(CPoint2D(0, 0), CPoint2D(50, 50), CColor3D(255, 0, 0));
+
+				std::vector<std::shared_ptr<CFigureBase>> InFigureModels;
+				InFigureModels.emplace_back(pRect);
+
+				auto pModel = std::make_shared<C2DGenModel>(modType, InFigureModels);
+				auto pRectProp = dynamic_cast<CProperty2DModel*>(pModel->GetProperty().get());
+
+				int speed = mMath->GenerateRandomValueInRange(2, m_MaxTrackObjSpeed);
+				int timeAfter = mMath->GenerateRandomValueInRange(0, m_TimeAfter);
+
+				pRectProp->SetSpeed(speed);
+				pRectProp->SetShowAfterTime(timeAfter);
+
+				rtnVecModels.emplace_back(pModel);
+			}
+			else if (modType == mTriangle)
+			{
+				modType = mTriangle;
+
+				auto pTrian = std::make_shared<CTriangle2D>(CPoint2D(0, -20), CPoint2D(0, 20), CPoint2D(-20, 0), CColor3D(255, 255, 255));
+
+				std::vector<std::shared_ptr<CFigureBase>> InFigureModels;
+				InFigureModels.emplace_back(pTrian);
+
+				auto pModel = std::make_shared<C2DGenModel>(modType, InFigureModels);
+
+				auto pCTrianProp = dynamic_cast<CTriangleProperty*>(pModel->GetProperty().get());
+				pCTrianProp->SetSpeed(5);
+				pCTrianProp->SetIsUp(true);
+
+				rtnVecModels.emplace_back(pModel);
+			}
+			else if (modType == mCycle)
+			{
+				modType = mCycle;
+
+				auto pCycle = std::make_shared<CCycle>(CPoint2D(0, 0), 20.00, CColor3D(255, 255, 0));
+				
+				std::vector<std::shared_ptr<CFigureBase>> InFigureModels;
+				InFigureModels.emplace_back(pCycle);
+
+				auto pModel = std::make_shared<C2DGenModel>(modType, InFigureModels);
+				auto pCycleProp = dynamic_cast<CCycleProperty*>(pModel->GetProperty().get());
+
+				pCycleProp->SetSpeed(5);
+				pCycleProp->SetMoveAngel(75);
+				pCycleProp->SetIsRebound(false);
+
+				rtnVecModels.emplace_back(pModel);
+			}
+
+			break;
+		}
+		
+		default:
+			break;
+	}
+
+	return rtnVecModels;
 }
 
 CScene2D::CScene2D()
 {	
+	m_MaxTrackObjSpeed = 8;
+	m_TimeAfter = 5000;
 }
 
 CScene2D::~CScene2D()
@@ -196,8 +413,8 @@ CScene2D::~CScene2D()
 
 void CScene2D::AddModel(std::shared_ptr<C2DModel> InModel)
 {
-	int iP = static_cast<int>(m_vModels.size()) - 1;
-	InModel->SetiP(iP);
+	//eModelType iP = InModel->GetiP();
+	//InModel->SetiP(iP);
 	m_vModels.emplace_back(InModel);
 }
 
