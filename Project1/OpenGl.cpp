@@ -124,7 +124,7 @@ void render()
 	
 	glutSwapBuffers();	
 
-	glutTimerFunc(TIMER, recomputeFrame, 1);
+	glutTimerFunc(static_cast<unsigned int>(TIMER), recomputeFrame, 1);
 }
 
 void MousePassiveMotion(int x, int y)
@@ -134,7 +134,7 @@ void MousePassiveMotion(int x, int y)
 
 int main(int argc, char* argv[]) 
 {
-	srand(time(NULL));
+	srand(static_cast<unsigned int>(time(NULL)));
 
 	m_OrthoMaxX = 50;
 	m_OrthoMinX = -50;

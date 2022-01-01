@@ -1,7 +1,6 @@
 #include "ProjManager.h"
 
 
-
 CProjManager::CProjManager()
 {
 }

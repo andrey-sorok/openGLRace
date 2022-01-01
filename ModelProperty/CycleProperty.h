@@ -17,7 +17,7 @@ public:
 	void SetMoveAngel(double InMoveAngel) { m_MoveAngel = InMoveAngel; };
 	double GetMoveAngel() { return m_MoveAngel; };
 
-	void SetIsRebound(int IndIsRebound) { m_IsRebound = IndIsRebound; };
+	void SetIsRebound(bool IndIsRebound) { m_IsRebound = IndIsRebound; };
 	bool GetIsRebound() { return m_IsRebound; };
 
 };

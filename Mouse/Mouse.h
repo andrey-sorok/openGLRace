@@ -10,9 +10,13 @@ class CScene2D;
 
 class CPoint3D;
 
+class CProjManager;
+
 class CMouse
 {
 private:
+
+	std::shared_ptr<CProjManager> m_ProjManager;
 	std::shared_ptr<CManagerFigure> pMNGFigure;
 	std::shared_ptr<CScene2D> m_pScene2D;
 

@@ -30,7 +30,7 @@ void COpenGLRender::InitWindowParams(const int window_width, const int window_he
 void COpenGLRender::Init(int WINWIDTH, int WINHEIGHT)
 {
 	glClear(GL_COLOR_BUFFER_BIT);
-	glClearColor(0.0, 0.2, 0.5, 0);
+	glClearColor(static_cast<GLclampf>(0.0), static_cast<GLclampf>(0.2), static_cast<GLclampf>(0.5), static_cast<GLclampf>(0.00));
 
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
@@ -41,6 +41,4 @@ std::pair<int, int> COpenGLRender::CenterOnScreen(int inWidth, int inHeight)
 {
 	auto Pair = std::make_pair(((glutGet(GLUT_SCREEN_WIDTH) - inWidth) / 2), (glutGet(GLUT_SCREEN_HEIGHT) - inHeight) / 2);
 	return Pair;
-	//center_x = (glutGet(GLUT_SCREEN_WIDTH) - inWidth) / 2;
-	//center_y = (glutGet(GLUT_SCREEN_HEIGHT) - inHeight) / 2;
 }

@@ -38,6 +38,8 @@ private:
 
 	std::vector<std::shared_ptr<C2DGenModel>> m_Ttrack1Models;
 
+	std::vector<std::shared_ptr<C2DModel>> m_Ttrack1ShootModels;
+
 	int m_MaxTrackObjSpeed;
 	int m_TimeAfter;
 	
@@ -87,6 +89,11 @@ public:
 
 	std::vector<std::shared_ptr<C2DGenModel>> GenerateTrack1Models(int winWight, int winHeight,
 		std::tuple<int, int, int, int> InTrackTimeNumIntervalsOneTimreIntervalMaxCurLtrackObjects);
+
+	void GenerateShootTrack1(int wHeight);
+
+	void SetTtrack1ShootModels(std::vector<std::shared_ptr<C2DModel>> InTtrack1ShootModels) { m_Ttrack1ShootModels = InTtrack1ShootModels; };
+	std::vector<std::shared_ptr<C2DModel>>& GetTtrack1ShootModels() { return m_Ttrack1ShootModels; };
 
 	void SetTrack1Models(std::vector<std::shared_ptr<C2DGenModel>> InTtrack1Models) { m_Ttrack1Models = InTtrack1Models; };
 	std::vector<std::shared_ptr<C2DGenModel>>& GetTrack1Models() { return m_Ttrack1Models; };

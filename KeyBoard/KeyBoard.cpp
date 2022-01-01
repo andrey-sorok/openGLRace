@@ -104,8 +104,11 @@ void CKeyBoard::KeyStroke(unsigned char key, int x, int y)
 	float offset = pConditions->GetCarOffset();
 	switch (key)
 	{
-		case 13:
+		case 13: //Enter
 		{
+
+			m_ProjManager->GetScene()->GenerateShootTrack1(pConditions->GetWINHEIGHT());
+
 			int i = 0;
 			++i;
 			break;

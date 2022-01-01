@@ -26,12 +26,16 @@
 
 #include "MyMath.h"
 
+#include "ProjManager.h"
+
 #include <gl\freeglut.h>
 
 #define _USE_MATH_DEFINES
 #include <math.h>
 #include <memory>
 #include <tuple>
+
+#include <chrono>
 
 
 
@@ -312,8 +316,8 @@ void C2DRender::DrawMoveTrack1(TrackState InState)
 
 				CPoint2D TrackModelPosXY((CurPosXY->x + pMNGFigure->GetConditions()->GetWINWIDTH()), (CurPosXY->y));
 
-				int dX = (MinMaxXY.second.x - MinMaxXY.first.x) / 2 + MinMaxXY.second.x / 2;
-				int dY = (MinMaxXY.second.y - MinMaxXY.first.y) / 2 + MinMaxXY.second.y / 2;
+				int dX = static_cast<int>((MinMaxXY.second.x - MinMaxXY.first.x) / 2 + MinMaxXY.second.x / 2);
+				int dY = static_cast<int>((MinMaxXY.second.y - MinMaxXY.first.y) / 2 + MinMaxXY.second.y / 2);
 
 				CPoint2D minXY(TrackModelPosXY.x, TrackModelPosXY.y);
 				CPoint2D maxXY(TrackModelPosXY.x + dX, TrackModelPosXY.y + dY);
@@ -374,9 +378,10 @@ void C2DRender::DrawMoveTrack1(TrackState InState)
 					CurTrack1Models.shrink_to_fit();
 				}
 
+				//If Track1 models intersect - change speed
 				for (auto iTrackModel : CurTrack1Models)
 				{
-					for (auto jTrackModel : CurTrack1Models)
+					for (auto& jTrackModel : CurTrack1Models)
 					{
 						if (iTrackModel != jTrackModel)
 						{
@@ -384,19 +389,64 @@ void C2DRender::DrawMoveTrack1(TrackState InState)
 							auto RectObjPoints2 = LMDGetRectPoints(jTrackModel);
 
 							auto pMath = std::make_unique<CMyMath>();
+							
 							bool IsIntesect = pMath->IsRectIntersection(RectObjPoints1, RectObjPoints2);
-
-							if (IsIntesect)
+							if (!IsIntesect)
 							{
-								int speedObj1 = iTrackModel->GetProperty()->GetSpeed();
-								int speedObj2 = jTrackModel->GetProperty()->GetSpeed();
-								if (speedObj1 < speedObj2)
+								IsIntesect = pMath->IsRectIntersection(RectObjPoints2, RectObjPoints1);
+							}
+
+							auto CurPosModel1 = iTrackModel->GetCurPositionXY(); 
+							auto CurPosModel2 = jTrackModel->GetCurPositionXY();
+
+							if ((CurPosModel1->x >= 0.00))// && 
+							if(CurPosModel2->x >= 0.00)
+							{
+								if (IsIntesect)
 								{
-									jTrackModel->GetProperty()->SetSpeed(m_pScene2D->GetMaxTrackObjSpeed());
-								}
-								else
-								{
-									iTrackModel->GetProperty()->SetSpeed(m_pScene2D->GetMaxTrackObjSpeed());
+									if ((iTrackModel->GetiP() == mRect) && (jTrackModel->GetiP() == mRect))
+									{
+										int speedObj1 = iTrackModel->GetProperty()->GetSpeed();
+										int speedObj2 = jTrackModel->GetProperty()->GetSpeed();
+										if (speedObj1 < speedObj2)
+										{
+											jTrackModel->GetProperty()->SetSpeed(m_pScene2D->GetMaxTrackObjSpeed());
+										}
+										else
+										{
+											iTrackModel->GetProperty()->SetSpeed(m_pScene2D->GetMaxTrackObjSpeed());
+										}
+									}
+									//if ((iTrackModel->GetiP() == mTriangle) && (jTrackModel->GetiP() == mTriangle))
+									//{
+									//	auto Prop = iTrackModel->GetProperty();
+									//	auto pTrianProp1 = dynamic_cast<CTriangleProperty*>(Prop.get());
+									//	//pTrianProp1->SetIsUp(false);
+							
+
+									//	Prop = jTrackModel->GetProperty();	
+									//	auto pTrianProp2 = dynamic_cast<CTriangleProperty*>(Prop.get());
+									//	
+									//	if (pTrianProp1->GetIsUp() == pTrianProp2->GetIsUp())
+									//		pTrianProp1->SetIsUp(!pTrianProp1->GetIsUp());
+
+
+									//}
+									//if ((iTrackModel->GetiP() == mCycle) && (jTrackModel->GetiP() == mCycle))
+									//{
+									//	auto Prop = iTrackModel->GetProperty();
+									//	auto pCycleProp1 = dynamic_cast<CCycleProperty*>(Prop.get());
+									//	//pCycleProp1->SetIsRebound(false);
+
+									//	Prop = jTrackModel->GetProperty();
+									//	auto pCycleProp2 = dynamic_cast<CCycleProperty*>(Prop.get());
+									//	
+									//	if (pCycleProp1->GetIsRebound() == pCycleProp2->GetIsRebound())
+									//		pCycleProp1->SetIsRebound(!pCycleProp1->GetIsRebound());
+
+									//	//pCycleProp->SetIsRebound(true);
+									//}
+
 								}
 							}
 
@@ -675,6 +725,7 @@ void C2DRender::DrawTrack1Objects()
 
 void C2DRender::DrawTrack1()
 {
+	auto begin = std::chrono::steady_clock::now();
 //DrawCarModel
 	DrawCarModelTrack1();
 ////End_DrawCarModel
@@ -688,14 +739,33 @@ void C2DRender::DrawTrack1()
 	DrawTrack1Objects();
 //End_Game_Objects
 
+//Shoot_Obj
+	DrawShootTrack1();
+//End_Shoot_Obj
+
 //CheckEncounters
 	std::shared_ptr<C2DModel> pCurModel = m_pScene2D->GetCurModel();
 	CheckEncounters(pCurModel);
 //End_CheckEncounters
 
+//CheckShootEncounters
+	CheckShootEncounters();
+//End_CheckShootEncounters
+
 //DellObjects_Outh_of_View
 	CheckOuthOfViewObjectsTrack1();
 //End_DellObjects_Outh_of_View
+
+	auto end = std::chrono::steady_clock::now();
+
+	auto elapsed_ms = std::chrono::duration_cast<std::chrono::milliseconds>(end - begin);
+
+	auto pConditions = pMNGFigure->GetConditions();
+	auto curGameTime = pConditions->GetCurGameTime();
+
+	curGameTime -= static_cast<int>(elapsed_ms.count());
+
+	pConditions->SetCurGameTime(curGameTime);
 }
 
 void C2DRender::DrawCarModelTrack1()
@@ -718,8 +788,8 @@ void C2DRender::DrawCarModelTrack1()
 
 	auto pMinMaxXY = pCurModel->GetMinMaxModelRect(pCurModel->GetObjects2D());
 
-	float NewLengthX = lengthModelY * oldScaleX;
-	float NewLengthY = lengthModelX * oldScaleY;
+	float NewLengthX = static_cast<float>(lengthModelY * oldScaleX);
+	float NewLengthY = static_cast<float>(lengthModelX * oldScaleY);
 
 	auto pCurPosition = pCurModel->GetCurPositionXY();
 
@@ -749,13 +819,22 @@ void C2DRender::DrawCarModelTrack1()
 	pCurModel->SetScaleY(scaleY);
 
 	CPoint2D* offseXY = pCurModel->GetOffset();
+	int GameTime = pCondition->GetCurGameTime();
+
+	if (GameTime <= 0)
+	{
+		float offset = pCondition->GetOffset();		
+		pCurModel->SetOffset(fHorizontal, +offset);
+	}
 
 	glPushMatrix();
 
 	glTranslatef(RectLengthXY.lengthX + offseXY->x, (pCondition->GetWINHEIGHT() / 2) + offseXY->y, 0);
 	glScalef(scaleX, scaleY, 0);
 	glRotatef(+90.00, 0, 0, 1);
+
 	glTranslatef(-centerXY.first, -centerXY.second, 0);
+
 
 	pCurModel->SetCurPositionXY(CPoint2D(RectLengthXY.lengthX + offseXY->x, (pCondition->GetWINHEIGHT() / 2) + offseXY->y));
 
@@ -811,6 +890,35 @@ void C2DRender::DrawCerbTracl1(std::shared_ptr<C2DModel> InModel)
 	}
 }
 
+void C2DRender::DrawShootTrack1()
+{
+	auto pConditions = pMNGFigure->GetConditions();
+	std::shared_ptr<C2DModel > pCurbModel = m_pScene2D->GetCurModel();
+
+	auto pShotModels = m_pScene2D->GetTtrack1ShootModels();
+
+	for (auto& iModel : pShotModels)
+	{
+		auto pCurPos = iModel->GetCurPositionXY();
+		int maxSpeed = m_pScene2D->GetMaxTrackObjSpeed();
+		//осчет времени генерации модели
+		auto Objects = iModel->GetObjects2D();
+		for (auto iFigure : Objects)
+		{
+			auto CurPosXY = iModel->GetCurPositionXY();
+			CurPosXY->x += maxSpeed*2;
+			glPushMatrix();
+			glTranslatef(static_cast<float>(CurPosXY->x),
+				static_cast<float>(CurPosXY->y), 0);
+
+			auto pBase = iFigure.get();
+			Draw2DOject(pBase);
+
+			glPopMatrix();
+		}
+	}
+}
+
 void C2DRender::CheckEncounters(std::shared_ptr<C2DModel> pCurModel)
 {
 	auto TrackModels = m_pScene2D->GetTrack1Models();
@@ -823,13 +931,13 @@ void C2DRender::CheckEncounters(std::shared_ptr<C2DModel> pCurModel)
 	int y = lstNewRectCoord.front();
 	lstNewRectCoord.pop_front();
 
-	CPoint2D p1(x, y);
+	CPoint2D p1(static_cast<float>(x), static_cast<float>(y));
 
 	x = lstNewRectCoord.front();
 	lstNewRectCoord.pop_front();
 	y = lstNewRectCoord.front();
 
-	CPoint2D p2(x, y);
+	CPoint2D p2(static_cast<float>(x), static_cast<float>(y));
 	auto PairPointCarMinMax = std::make_pair(p1, p2);
 	bool IsIntesect = false;
 	for (auto iModel : TrackModels)
@@ -855,13 +963,13 @@ void C2DRender::CheckEncounters(std::shared_ptr<C2DModel> pCurModel)
 
 				CPoint2D TrackModelPosXY((CurPosXY->x + pMNGFigure->GetConditions()->GetWINWIDTH()), (CurPosXY->y));
 
-				int dX = (MinMaxXY.second.x - MinMaxXY.first.x) / 2 + MinMaxXY.second.x / 2;
-				int dY = (MinMaxXY.second.y - MinMaxXY.first.y) / 2 + MinMaxXY.second.y / 2;
+				int dX = static_cast<int>((MinMaxXY.second.x - MinMaxXY.first.x) / 2 + MinMaxXY.second.x / 2);
+				int dY = static_cast<int>((MinMaxXY.second.y - MinMaxXY.first.y) / 2 + MinMaxXY.second.y / 2);
 
 				CPoint2D minXY(TrackModelPosXY.x, TrackModelPosXY.y);
 				CPoint2D maxXY(TrackModelPosXY.x + dX, TrackModelPosXY.y + dY);
 
-				auto pLine1 = std::make_shared<CLine2D>(CPoint2D(minXY.x, minXY.y), CPoint2D(maxXY.x, minXY.y), CColor3D(255, 255, 0));
+				/*auto pLine1 = std::make_shared<CLine2D>(CPoint2D(minXY.x, minXY.y), CPoint2D(maxXY.x, minXY.y), CColor3D(255, 255, 0));
 				auto pLine2 = std::make_shared<CLine2D>(CPoint2D(maxXY.x, minXY.y), CPoint2D(maxXY.x, maxXY.y), CColor3D(255, 255, 0));
 
 				auto pLine3 = std::make_shared<CLine2D>(CPoint2D(maxXY.x, maxXY.y), CPoint2D(minXY.x, maxXY.y), CColor3D(255, 255, 0));
@@ -870,14 +978,14 @@ void C2DRender::CheckEncounters(std::shared_ptr<C2DModel> pCurModel)
 				Draw2DLine(pLine1.get());
 				Draw2DLine(pLine2.get());
 				Draw2DLine(pLine3.get());
-				Draw2DLine(pLine4.get());
+				Draw2DLine(pLine4.get());*/
 
 				auto TrackModelMinMaxXY = std::make_pair(minXY, maxXY);
 				auto pMath = std::make_unique<CMyMath>();
 
 				IsIntesect = pMath->IsRectIntersection(PairPointCarMinMax, TrackModelMinMaxXY);
 				
-break;
+				break;
 			}
 
 			case mCycle:		//3
@@ -887,12 +995,12 @@ break;
 				auto Cucle = dynamic_cast<CCycle*>(Obj.front().get());
 				auto radius = Cucle->GetRadius();
 
-				CPoint2D MinXY(CurPosXY->x - radius, CurPosXY->y - radius);
-				CPoint2D MaxXY(CurPosXY->x + radius, CurPosXY->y + radius);
-				CPoint2D TrackModelPosXY((CurPosXY->x + pMNGFigure->GetConditions()->GetWINWIDTH()), (CurPosXY->y + pMNGFigure->GetConditions()->GetWINHEIGHT() / 2));
+				CPoint2D MinXY(static_cast<float>(CurPosXY->x - radius), static_cast<float>(CurPosXY->y - radius));
+				CPoint2D MaxXY(static_cast<float>(CurPosXY->x + radius), static_cast<float>(CurPosXY->y + radius));
+				CPoint2D TrackModelPosXY(static_cast<float>((CurPosXY->x + pMNGFigure->GetConditions()->GetWINWIDTH())), static_cast<float>((CurPosXY->y)));
 
-				int dX = MaxXY.x - MinXY.x;
-				int dY = MaxXY.y - MinXY.y;
+				int dX = static_cast<int>(MaxXY.x - MinXY.x);
+				int dY = static_cast<int>(MaxXY.y - MinXY.y);
 
 				CPoint2D minXY(TrackModelPosXY.x - dX / 2, TrackModelPosXY.y - dY / 2);
 				CPoint2D maxXY(TrackModelPosXY.x + dX / 2, TrackModelPosXY.y + dY / 2);
@@ -921,24 +1029,24 @@ break;
 				auto CurPosXY = iModel->GetCurPositionXY();
 				auto MinMaxXY = iModel->GetMinMaxModelRect(iModel->GetObjects2D());
 
-				CPoint2D TrackModelPosXY((CurPosXY->x + pMNGFigure->GetConditions()->GetWINWIDTH()), (CurPosXY->y + pMNGFigure->GetConditions()->GetWINHEIGHT() / 2));
+				CPoint2D TrackModelPosXY((CurPosXY->x + pMNGFigure->GetConditions()->GetWINWIDTH()), (CurPosXY->y ));
 
-				int dX = (MinMaxXY.second.x - MinMaxXY.first.x) / 2;// +MinMaxXY.second.x / 2;
-				int dY = (MinMaxXY.second.y - MinMaxXY.first.y) / 2;// +MinMaxXY.second.y / 2;
+				int dX = static_cast<int>((MinMaxXY.second.x - MinMaxXY.first.x) / 2);// +MinMaxXY.second.x / 2;
+				int dY = static_cast<int>((MinMaxXY.second.y - MinMaxXY.first.y) / 2);// +MinMaxXY.second.y / 2;
 
-				CPoint2D minXY(TrackModelPosXY.x - dX, TrackModelPosXY.y - dY);
+				CPoint2D minXY(TrackModelPosXY.x - 2*dX, TrackModelPosXY.y - dY);
 				CPoint2D maxXY(TrackModelPosXY.x, TrackModelPosXY.y + dY);
 
-				/*auto pLine1 = std::make_shared<CLine2D>(CPoint2D(minXY.x, minXY.y), CPoint2D(maxXY.x, minXY.y), CColor3D(255, 255, 0));
-				auto pLine2 = std::make_shared<CLine2D>(CPoint2D(maxXY.x, minXY.y), CPoint2D(maxXY.x, maxXY.y), CColor3D(255, 255, 0));
+				//auto pLine1 = std::make_shared<CLine2D>(CPoint2D(minXY.x, minXY.y), CPoint2D(maxXY.x, minXY.y), CColor3D(255, 255, 0));
+				//auto pLine2 = std::make_shared<CLine2D>(CPoint2D(maxXY.x, minXY.y), CPoint2D(maxXY.x, maxXY.y), CColor3D(255, 255, 0));
 
-				auto pLine3 = std::make_shared<CLine2D>(CPoint2D(maxXY.x, maxXY.y), CPoint2D(minXY.x, maxXY.y), CColor3D(255, 255, 0));
-				auto pLine4 = std::make_shared<CLine2D>(CPoint2D(minXY.x, maxXY.y), CPoint2D(minXY.x, minXY.y), CColor3D(255, 255, 0));
+				//auto pLine3 = std::make_shared<CLine2D>(CPoint2D(maxXY.x, maxXY.y), CPoint2D(minXY.x, maxXY.y), CColor3D(255, 255, 0));
+				//auto pLine4 = std::make_shared<CLine2D>(CPoint2D(minXY.x, maxXY.y), CPoint2D(minXY.x, minXY.y), CColor3D(255, 255, 0));
 
-				Draw2DLine(pLine1.get());
-				Draw2DLine(pLine2.get());
-				Draw2DLine(pLine3.get());
-				Draw2DLine(pLine4.get());*/
+				//Draw2DLine(pLine1.get());
+				//Draw2DLine(pLine2.get());
+				//Draw2DLine(pLine3.get());
+				//Draw2DLine(pLine4.get());
 
 				auto TrackModelMinMaxXY = std::make_pair(minXY, maxXY);
 				auto pMath = std::make_unique<CMyMath>();
@@ -959,6 +1067,9 @@ break;
 
 		if (IsIntesect)
 		{
+			auto pConditions = pMNGFigure->GetConditions();
+			pConditions->SetCurGameTime(pConditions->GetFirstLevelTime());
+
 			ReloadLevel(fOne);
 		}
 
@@ -967,38 +1078,234 @@ break;
 
 }
 
+void C2DRender::CheckShootEncounters()
+{
+	auto pTrack1Models = m_pScene2D->GetTrack1Models();
+	auto pShootModels = m_pScene2D->GetTtrack1ShootModels();
+
+	for (auto iShoot : pShootModels)
+	{
+		auto CurPosXY = iShoot->GetCurPositionXY();
+
+		auto MinMAxXY = iShoot->GetMinMaxRectXY();
+		int dX = static_cast<int>(MinMAxXY.second.x / 2);
+		int dY = static_cast<int>(MinMAxXY.second.y / 2);
+		
+		CPoint2D p1(CurPosXY->x -dX, CurPosXY->y -dY);
+		CPoint2D p2(CurPosXY->x + dX, CurPosXY->y + dY);
+		auto PairPointCarMinMax = std::make_pair(p1, p2);
+
+
+		auto pLine1 = std::make_shared<CLine2D>(CPoint2D(p1.x, p1.y), CPoint2D(p2.x, p1.y), CColor3D(255, 255, 0));
+		auto pLine2 = std::make_shared<CLine2D>(CPoint2D(p2.x, p1.y), CPoint2D(p2.x, p2.y), CColor3D(255, 255, 0));
+
+		auto pLine3 = std::make_shared<CLine2D>(CPoint2D(p2.x, p2.y), CPoint2D(p1.x, p2.y), CColor3D(255, 255, 0));
+		auto pLine4 = std::make_shared<CLine2D>(CPoint2D(p1.x, p2.y), CPoint2D(p1.x, p1.y), CColor3D(255, 255, 0));
+
+		Draw2DLine(pLine1.get());
+		Draw2DLine(pLine2.get());
+		Draw2DLine(pLine3.get());
+		Draw2DLine(pLine4.get());
+
+		bool IsIntesect = false;
+		for (int i = 0; i < pTrack1Models.size(); ++i)
+		{
+			auto iModel = pTrack1Models[i];
+			
+			eModelType mType = iModel->GetiP();
+
+			switch (mType)
+			{
+
+				case mRect:			//2
+				{
+					auto CurPosXY = iModel->GetCurPositionXY();
+					auto MinMaxXY = iModel->GetMinMaxModelRect(iModel->GetObjects2D());
+
+					CPoint2D TrackModelPosXY((CurPosXY->x + pMNGFigure->GetConditions()->GetWINWIDTH()), (CurPosXY->y));
+
+					int dX = static_cast<int>((MinMaxXY.second.x - MinMaxXY.first.x) / 2 + MinMaxXY.second.x / 2);
+					int dY = static_cast<int>((MinMaxXY.second.y - MinMaxXY.first.y) / 2 + MinMaxXY.second.y / 2);
+
+					CPoint2D minXY(TrackModelPosXY.x, TrackModelPosXY.y);
+					CPoint2D maxXY(TrackModelPosXY.x + dX, TrackModelPosXY.y + dY);
+
+					/*auto pLine1 = std::make_shared<CLine2D>(CPoint2D(minXY.x, minXY.y), CPoint2D(maxXY.x, minXY.y), CColor3D(255, 255, 0));
+					auto pLine2 = std::make_shared<CLine2D>(CPoint2D(maxXY.x, minXY.y), CPoint2D(maxXY.x, maxXY.y), CColor3D(255, 255, 0));
+
+					auto pLine3 = std::make_shared<CLine2D>(CPoint2D(maxXY.x, maxXY.y), CPoint2D(minXY.x, maxXY.y), CColor3D(255, 255, 0));
+					auto pLine4 = std::make_shared<CLine2D>(CPoint2D(minXY.x, maxXY.y), CPoint2D(minXY.x, minXY.y), CColor3D(255, 255, 0));
+
+					Draw2DLine(pLine1.get());
+					Draw2DLine(pLine2.get());
+					Draw2DLine(pLine3.get());
+					Draw2DLine(pLine4.get());*/
+
+					auto TrackModelMinMaxXY = std::make_pair(minXY, maxXY);
+					auto pMath = std::make_unique<CMyMath>();
+
+					IsIntesect = pMath->IsRectIntersection(PairPointCarMinMax, TrackModelMinMaxXY);
+					IsIntesect = pMath->IsRectIntersection(TrackModelMinMaxXY, PairPointCarMinMax);
+
+					break;
+				}
+
+				case mCycle:		//3
+				{
+					auto CurPosXY = iModel->GetCurPositionXY();
+					auto Obj = iModel->GetObjects2D();
+					auto Cucle = dynamic_cast<CCycle*>(Obj.front().get());
+					auto radius = Cucle->GetRadius();
+
+					CPoint2D MinXY(static_cast<float>(CurPosXY->x - radius), static_cast<float>(CurPosXY->y - radius));
+					CPoint2D MaxXY(static_cast<float>(CurPosXY->x + radius), static_cast<float>(CurPosXY->y + radius));
+					CPoint2D TrackModelPosXY((CurPosXY->x + pMNGFigure->GetConditions()->GetWINWIDTH()), (CurPosXY->y));
+
+					int dX = static_cast<int>(MaxXY.x - MinXY.x);
+					int dY = static_cast<int>(MaxXY.y - MinXY.y);
+
+					CPoint2D minXY(TrackModelPosXY.x - dX / 2, TrackModelPosXY.y - dY / 2);
+					CPoint2D maxXY(TrackModelPosXY.x + dX / 2, TrackModelPosXY.y + dY / 2);
+
+					/*auto pLine1 = std::make_shared<CLine2D>(CPoint2D(minXY.x, minXY.y), CPoint2D(maxXY.x, minXY.y), CColor3D(255, 255, 0));
+					auto pLine2 = std::make_shared<CLine2D>(CPoint2D(maxXY.x, minXY.y), CPoint2D(maxXY.x, maxXY.y), CColor3D(255, 255, 0));
+
+					auto pLine3 = std::make_shared<CLine2D>(CPoint2D(maxXY.x, maxXY.y), CPoint2D(minXY.x, maxXY.y), CColor3D(255, 255, 0));
+					auto pLine4 = std::make_shared<CLine2D>(CPoint2D(minXY.x, maxXY.y), CPoint2D(minXY.x, minXY.y), CColor3D(255, 255, 0));
+
+					Draw2DLine(pLine1.get());
+					Draw2DLine(pLine2.get());
+					Draw2DLine(pLine3.get());
+					Draw2DLine(pLine4.get());*/
+
+					auto TrackModelMinMaxXY = std::make_pair(minXY, maxXY);
+					auto pMath = std::make_unique<CMyMath>();
+
+					IsIntesect = pMath->IsRectIntersection(PairPointCarMinMax, TrackModelMinMaxXY);
+					IsIntesect = pMath->IsRectIntersection(TrackModelMinMaxXY, PairPointCarMinMax);
+
+					break;
+				}
+
+				case mTriangle:		//4
+				{
+					auto CurPosXY = iModel->GetCurPositionXY();
+					auto MinMaxXY = iModel->GetMinMaxModelRect(iModel->GetObjects2D());
+
+					CPoint2D TrackModelPosXY((CurPosXY->x + pMNGFigure->GetConditions()->GetWINWIDTH()), (CurPosXY->y));
+
+					int dX = static_cast<int>((MinMaxXY.second.x - MinMaxXY.first.x) / 2);// +MinMaxXY.second.x / 2;
+					int dY = static_cast<int>((MinMaxXY.second.y - MinMaxXY.first.y) / 2);// +MinMaxXY.second.y / 2;
+
+					CPoint2D minXY(TrackModelPosXY.x - 2 * dX, TrackModelPosXY.y - dY);
+					CPoint2D maxXY(TrackModelPosXY.x, TrackModelPosXY.y + dY);
+
+					/*auto pLine1 = std::make_shared<CLine2D>(CPoint2D(minXY.x, minXY.y), CPoint2D(maxXY.x, minXY.y), CColor3D(255, 255, 0));
+					auto pLine2 = std::make_shared<CLine2D>(CPoint2D(maxXY.x, minXY.y), CPoint2D(maxXY.x, maxXY.y), CColor3D(255, 255, 0));
+
+					auto pLine3 = std::make_shared<CLine2D>(CPoint2D(maxXY.x, maxXY.y), CPoint2D(minXY.x, maxXY.y), CColor3D(255, 255, 0));
+					auto pLine4 = std::make_shared<CLine2D>(CPoint2D(minXY.x, maxXY.y), CPoint2D(minXY.x, minXY.y), CColor3D(255, 255, 0));
+
+					Draw2DLine(pLine1.get());
+					Draw2DLine(pLine2.get());
+					Draw2DLine(pLine3.get());
+					Draw2DLine(pLine4.get());*/
+
+					auto TrackModelMinMaxXY = std::make_pair(minXY, maxXY);
+					auto pMath = std::make_unique<CMyMath>();
+
+					IsIntesect = pMath->IsRectIntersection(PairPointCarMinMax, TrackModelMinMaxXY);
+					IsIntesect = pMath->IsRectIntersection(TrackModelMinMaxXY, PairPointCarMinMax);
+
+					break;
+				}
+
+				default:
+					break;
+			}
+
+			if (IsIntesect)
+			{
+				bool IsUnique = iModel.unique();
+				pTrack1Models.erase(pTrack1Models.begin() + i);
+				iModel.reset();
+
+				m_pScene2D->SetTrack1Models(pTrack1Models);
+			}
+		}
+	}
+}
+
 void C2DRender::CheckOuthOfViewObjectsTrack1()
 {
 	auto pConditions = pMNGFigure->GetConditions();
 	auto TrackModels = m_pScene2D->GetTrack1Models();
-	
-	int size = TrackModels.size();
-	for (int iModel = 0; iModel < TrackModels.size(); ++iModel)
+
+	int GameTime = pConditions->GetCurGameTime();
+
+	if (GameTime < 0)
 	{
-		auto pModel = TrackModels[iModel];
-
-		auto CurPosXY = pModel->GetCurPositionXY();
-
-		int offset = pConditions->GetCarOffset();
-		if (((pConditions->GetWINWIDTH()) + CurPosXY->x) < -offset)
+		for (int iModel = 0; iModel < TrackModels.size(); ++iModel)
 		{
+			auto pModel = TrackModels[iModel];
+
 			bool IsUnique = pModel.unique();
 			TrackModels.erase(TrackModels.begin() + iModel);
 			pModel.reset();
 		}
-	}
-
-	if (size > TrackModels.size())
-	{
-		//bool IsGenerate = false;
-		//pConditions->SetIsGenerate(IsGenerate);
 		m_pScene2D->SetTrack1Models(TrackModels);
 	}
-	//if (TrackModels.empty())
-	if(pConditions->GetMaxTrackObj() > TrackModels.size())
+	else
 	{
-		bool IsGenerate = false;
-		pConditions->SetIsGenerate(IsGenerate);
+		int size = static_cast<int>(TrackModels.size());
+		for (int iModel = 0; iModel < TrackModels.size(); ++iModel)
+		{
+			auto pModel = TrackModels[iModel];
+
+			auto CurPosXY = pModel->GetCurPositionXY();
+
+			int offset = static_cast<int>(pConditions->GetCarOffset());
+			if (((pConditions->GetWINWIDTH()) + CurPosXY->x) < -offset)
+			{
+				bool IsUnique = pModel.unique();
+				TrackModels.erase(TrackModels.begin() + iModel);
+				pModel.reset();
+			}
+		}
+
+
+		if (size > TrackModels.size())
+		{
+			//bool IsGenerate = false;
+			//pConditions->SetIsGenerate(IsGenerate);
+			m_pScene2D->SetTrack1Models(TrackModels);
+		}
+		//if (TrackModels.empty())
+		if (pConditions->GetMaxTrackObj() > TrackModels.size())
+		{
+			bool IsGenerate = false;
+			pConditions->SetIsGenerate(IsGenerate);
+		}
+	}
+	//ShootModels
+	auto pShootTrackModels = m_pScene2D->GetTtrack1ShootModels();
+
+	int size = static_cast<int>(pShootTrackModels.size());
+	for (int iModel = 0; iModel < pShootTrackModels.size(); ++iModel)
+	{
+		auto pModel = pShootTrackModels[iModel];
+
+		auto CurPosXY = pModel->GetCurPositionXY();
+
+		int offset = static_cast<int>(pConditions->GetCarOffset());
+		if (( CurPosXY->x + offset) > pConditions->GetWINWIDTH())
+		{
+			bool IsUnique = pModel.unique();
+			pShootTrackModels.erase(pShootTrackModels.begin() + iModel);
+			pModel.reset();
+
+			m_pScene2D->SetTtrack1ShootModels(pShootTrackModels);
+		}
 	}
 
 	/*if (TrackModels.size() == 1)
@@ -1025,6 +1332,8 @@ void C2DRender::ReloadLevel(TrackState InTrack)
 			auto RectLengthXY = pConditions->GetRectForCarInTrack();
 
 			pCarModel->SetCurPositionXY(CPoint2D(RectLengthXY.lengthX + offsetXY->x, (pConditions->GetWINHEIGHT() / 2) + offsetXY->y));
+
+			pConditions->SetCurGameTime(pConditions->GetFirstLevelTime());
 
 			m_pScene2D->SetTrack1Models(std::vector<std::shared_ptr<C2DGenModel>>());
 
@@ -1078,45 +1387,47 @@ void C2DRender::CycleBehaviour(std::shared_ptr<C2DGenModel> InModel)
 	auto Obj2D = InModel->GetObjects2D();
 
 	auto pCycle = dynamic_cast<CCycle*>(Obj2D.front().get());
-	int radius = pCycle->GetRadius();
+	int radius = static_cast<int>(pCycle->GetRadius());
 
 	if (IsRebound)
 	{
 
-		int curPosY = wHeight / 2 + CurPosXY->y + radius;
-		if (curPosY > (wHeight - CerbHeight))
+		int curPosY = static_cast<int>(wHeight / 2 + CurPosXY->y + radius);
+		//if (curPosY > (wHeight - CerbHeight))
+		if (CurPosXY->y > (wHeight - CerbHeight))
 		{
-			CurPosXY->y -= CerbHeight;
+			CurPosXY->y = static_cast<float>(wHeight - CerbHeight);
 			IsRebound = false;
 			pCycleProp->SetIsRebound(IsRebound);
 		}
 		else
 		{
 			//DOWN
-			CurPosXY->x = CurPosXY->x - Speed * cos(Angel * M_PI / 180);
-			CurPosXY->y = CurPosXY->y + Speed * sin(Angel * M_PI / 180);
+			CurPosXY->x = static_cast<float>(CurPosXY->x - Speed * cos(Angel * M_PI / 180));
+			CurPosXY->y = static_cast<float>(CurPosXY->y + Speed * sin(Angel * M_PI / 180));
 		}
 	}
 	else
 	{
-		int curPosY = wHeight / 2 + CurPosXY->y - radius;
+		int curPosY = static_cast<int>(wHeight / 2 + CurPosXY->y - radius);
 		
-		if (curPosY < CerbHeight)
+		//if (curPosY < CerbHeight)
+		if (CurPosXY->y < CerbHeight)
 		{
-			CurPosXY->y += curPosY;
+			CurPosXY->y = static_cast<float>(CerbHeight);
 			IsRebound = true;
 			pCycleProp->SetIsRebound(IsRebound);
 		}
 		else
 		{
 			//UP
-			CurPosXY->x = CurPosXY->x - Speed * cos(Angel * M_PI / 180);
-			CurPosXY->y = CurPosXY->y - Speed * sin(Angel * M_PI / 180);
+			CurPosXY->x = static_cast<float>(CurPosXY->x - Speed * cos(Angel * M_PI / 180));
+			CurPosXY->y = static_cast<float>(CurPosXY->y - Speed * sin(Angel * M_PI / 180));
 		}
 	}
 
-	int curRadPosX = wWidth / 2 + CurPosXY->x;
-	int curRadPosY = wHeight / 2 + CurPosXY->y;	
+	int curRadPosX = static_cast<int>(wWidth / 2 + CurPosXY->x);
+	int curRadPosY = static_cast<int>(wHeight / 2 + CurPosXY->y);
 }
 
 void C2DRender::TrianBehavior(std::shared_ptr<C2DGenModel> InModel)
@@ -1140,24 +1451,25 @@ void C2DRender::TrianBehavior(std::shared_ptr<C2DGenModel> InModel)
 	auto DescrRect = pTrian->GetDescribedRect();
 	auto CerbHight = pCondition->GetCerbHeight() * 2;
 
-	int curPosY = wHeight / 2 + CurPosXY->y;// +radius;
+	int curPosY = wHeight / 2;// +CurPosXY->y;// +radius;
 
-	if ((((wHeight / 2) + CurPosXY->y + MinMaxXY.first.y) <= CerbHight) || (((wHeight / 2) + CurPosXY->y + MinMaxXY.second.y) >= (wHeight - CerbHight)))//up cerb and bottom cerb
+	if (((CurPosXY->y + MinMaxXY.first.y) <= CerbHight) || (( + CurPosXY->y + MinMaxXY.second.y) >= (wHeight - CerbHight)))//up cerb and bottom cerb
 	{
 		pTrianProp->SetIsUp(!pTrianProp->GetIsUp());
 	}
 
 	bool IsUp = pTrianProp->GetIsUp();
 	int speed = pTrianProp->GetSpeed();
+	int vertSpeed = 2;
 	if (IsUp)
 	{
-		CurPosXY->y += speed;
-		CurPosXY->x -= speed/2;
+		CurPosXY->y += vertSpeed*2;
+		CurPosXY->x -= vertSpeed;
 	}
 	else
 	{
-		CurPosXY->y -=  speed;
-		CurPosXY->x -= speed/2;
+		CurPosXY->y -= vertSpeed*2;
+		CurPosXY->x -= vertSpeed;
 	}
 	
 	InModel->SetCurPositionXY(CPoint2D(CurPosXY->x, CurPosXY->y));

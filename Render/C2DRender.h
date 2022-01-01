@@ -21,9 +21,14 @@ class CScene2D;
 class C2DModel;
 class C2DGenModel;
 
+class CProjManager;
+
 class C2DRender :public COpenGLRender
 {
 private:
+
+	std::shared_ptr<CProjManager> m_ProjManager;
+
 	std::shared_ptr<CManagerFigure> pMNGFigure;
 
 	std::shared_ptr<CScene2D> m_pScene2D;
@@ -66,8 +71,10 @@ private:
 	void DrawTrack1();
 	void DrawCarModelTrack1();
 	void DrawCerbTracl1(std::shared_ptr<C2DModel> InModel);
+	void DrawShootTrack1();
 
 	void CheckEncounters(std::shared_ptr<C2DModel> pCurModel);
+	void CheckShootEncounters();
 	void CheckOuthOfViewObjectsTrack1();
 
 	void ReloadLevel(TrackState InTrack);

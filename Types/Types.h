@@ -43,6 +43,7 @@ enum eModelType
 	mCycle,			//3
 	mTriangle,		//4
 	m—omposite,		//5
+	mShoot,			//6
 };
 
 

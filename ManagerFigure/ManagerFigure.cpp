@@ -41,7 +41,7 @@ void CManagerFigure::CreateNewFigure(int x, int y)
 	CPoint3D pCenterRect = pCoordTransf->Win2ProjCoordinate(x, y);
 	
 	double deltaRect = 6.00;
-	auto pNewRect = new CRect2D(pCenterRect.x, pCenterRect.y, deltaRect);
+	auto pNewRect = new CRect2D(static_cast<int>(pCenterRect.x), static_cast<int>(pCenterRect.y), deltaRect);
 	AddObject2D(pNewRect);
 }
 
@@ -62,7 +62,7 @@ void CManagerFigure::CreateNewFigure(int InX, int InY, EFigure InCurFigure)
 			auto pConditions = GetConditions();
 			auto CurColor = pConditions->GetCurColor();
 
-			auto pNewTriangle = new CTriangle2D(pCenterRect.x, pCenterRect.y, CurColor);
+			auto pNewTriangle = new CTriangle2D(static_cast<int>(pCenterRect.x), static_cast<int>(pCenterRect.y), CurColor);
 			AddObject2D(pNewTriangle);
 		}
 			break;

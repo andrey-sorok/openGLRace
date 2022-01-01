@@ -1,5 +1,9 @@
-#pragma once
-#include "D:\MyExperiments\OpenGL\openGLRace\ModelProperty\Property2DModel.h"
+#ifndef __TRIANGLEPROPERTY_
+#define __TRIANGLEPROPERTY_
+
+#include "Property2DModel.h"
+
+
 class CTriangleProperty : public CProperty2DModel
 {
 private:
@@ -9,7 +13,8 @@ public:
 	CTriangleProperty();
 	~CTriangleProperty();
 
-	void SetIsUp(int InIsUp) { m_IsUp = InIsUp; };
+	void SetIsUp(bool InIsUp) { m_IsUp = InIsUp; };
 	bool GetIsUp() { return m_IsUp; };
 };
 
+#endif //__TRIANGLEPROPERTY_

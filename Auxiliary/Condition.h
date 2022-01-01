@@ -41,6 +41,7 @@ private:
 
 	RectForCarInTrack m_RectForCarInTrack;
 
+	int m_FirstLevelTime;
 	int m_CurGameTime;
 	int m_NumTrackIntervals;
 	int m_IntervalLength;
@@ -109,6 +110,9 @@ public:
 
 	void SetCurGameTime(int InCurGameTime) { m_CurGameTime = InCurGameTime; };
 	int GetCurGameTime() { return m_CurGameTime; };
+	
+	void SetFirstLevelTime(int InFirstLevelTime) { m_FirstLevelTime = InFirstLevelTime; };
+	int GetFirstLevelTime() { return m_FirstLevelTime; };
 	
 	//void SetNumTrackIntervals(int InNumTrackIntervals) { m_NumTrackIntervals = InNumTrackIntervals; };
 	int GetNumTrackIntervals() { return m_NumTrackIntervals; };

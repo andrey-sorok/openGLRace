@@ -229,6 +229,49 @@ std::vector<std::shared_ptr<C2DGenModel>> CScene2D::GenerateTrack1Models(int win
 	return vRtnTrackModels;
 }
 
+void CScene2D::GenerateShootTrack1(int wHeight)
+{
+
+	std::shared_ptr<C2DModel> pCurModel = GetCurModel();
+	
+	auto pCurPosition = pCurModel->GetCurPositionXY();
+	
+	auto MinMaxXYRect = pCurModel->GetMinMaxRectXY();
+	
+	float lengthModelX = MinMaxXYRect.second.x - MinMaxXYRect.first.x;
+	float lengthModelY = MinMaxXYRect.second.y - MinMaxXYRect.first.y;
+	//__
+
+	double oldScaleX = pCurModel->GetScaleX();
+	double oldScaleY = pCurModel->GetScaleY();
+
+	float NewLengthX = static_cast<float>(lengthModelY * oldScaleX);
+	float NewLengthY = static_cast<float>(lengthModelX * oldScaleY);
+
+	int curX2 = static_cast<int>(pCurPosition->x + NewLengthX / 2);
+	int curY2 = static_cast<int>(pCurPosition->y + NewLengthY / 2);
+
+	int curX1 = static_cast<int>(pCurPosition->x - NewLengthX / 2);
+	int curY1 = static_cast<int>(pCurPosition->y - NewLengthY / 2);
+
+	auto pRect = std::make_shared<CRect2D>(CPoint2D(0, 0), CPoint2D(8, 2), CColor3D(255, 0, 255));
+	std::vector<std::shared_ptr<CFigureBase>> tmpShoots;
+	tmpShoots.emplace_back(pRect);
+
+	auto pShootModel = std::make_shared<C2DModel>(mShoot, tmpShoots);
+
+	CPoint2D* CurPosXY = pShootModel->GetCurPositionXY();
+
+	auto offset = pCurModel->GetOffset();
+
+	int margin = 25 + 50;
+	CurPosXY->x = static_cast<float>(curX2);
+	CurPosXY->y = (wHeight / 2) + offset->y;
+
+	m_Ttrack1ShootModels.emplace_back(pShootModel);
+
+}
+
 void CScene2D::ClearCurModels()
 {
 	m_vCarsModels.clear();
@@ -269,7 +312,7 @@ std::vector<std::shared_ptr<C2DGenModel>> CScene2D::Generate(int winWight, int w
 				CPoint2D* CurPosXY = pModel->GetCurPositionXY();
 				
 				int margin = 25 + 50;
-				CurPosXY->y = mMath->GenerateRandomValueInRange(25, winHeight - margin);
+				CurPosXY->y = static_cast<float>(mMath->GenerateRandomValueInRange(25, winHeight - margin));
 
 				auto pRectProp = dynamic_cast<CProperty2DModel*>(pModel->GetProperty().get());
 				
@@ -288,17 +331,31 @@ std::vector<std::shared_ptr<C2DGenModel>> CScene2D::Generate(int winWight, int w
 		{
 			for (int iFigure = 0; iFigure < numGenObj; ++iFigure) 
 			{
-				int intType = mMath->GenerateRandomValueInRange((int)mRect, (int)mTriangle );
-				eModelType modType = static_cast<eModelType>(intType);
+				int intType = mMath->GenerateRandomValueInRange(6, 9);
+				eModelType modType = mRect;
+				
+				if ((intType > 3) && (intType <= 6))
+					modType = mTriangle;
+				if (((intType > 6) && (intType <= 9)))
+					modType = mRect;
+
+				//eModelType modType = static_cast<eModelType>(intType);
 
 				if (modType == mRect)
 				{
+					eModelType modType = mRect;
+
 					auto pRect = std::make_shared<CRect2D>(CPoint2D(0, 0), CPoint2D(50, 50), CColor3D(255, 0, 0));
 
 					std::vector<std::shared_ptr<CFigureBase>> InFigureModels;
 					InFigureModels.emplace_back(pRect);
 
 					auto pModel = std::make_shared<C2DGenModel>(modType, InFigureModels);
+					CPoint2D* CurPosXY = pModel->GetCurPositionXY();
+
+					int margin = 25 + 50;
+					CurPosXY->y = static_cast<float>(mMath->GenerateRandomValueInRange(25, winHeight - margin));
+
 					auto pRectProp = dynamic_cast<CProperty2DModel*>(pModel->GetProperty().get());
 
 					int speed = mMath->GenerateRandomValueInRange(1, m_MaxTrackObjSpeed);
@@ -320,9 +377,26 @@ std::vector<std::shared_ptr<C2DGenModel>> CScene2D::Generate(int winWight, int w
 
 					auto pModel = std::make_shared<C2DGenModel>(modType, InFigureModels);
 
+					CPoint2D* CurPosXY = pModel->GetCurPositionXY();
+
+					int margin = 25 + 50;
+					CurPosXY->y = static_cast<float>(mMath->GenerateRandomValueInRange(200, winHeight - 200)); //winHeight/2;//
+
 					auto pCTrianProp = dynamic_cast<CTriangleProperty*>(pModel->GetProperty().get());
-					pCTrianProp->SetSpeed(5);
-					pCTrianProp->SetIsUp(true);
+
+					int speed = mMath->GenerateRandomValueInRange(1, m_MaxTrackObjSpeed);
+
+					pCTrianProp->SetSpeed(speed);
+
+					int IsBound = mMath->GenerateRandomValueInRange(1, 10);
+					if (IsBound < 5)
+					{
+						pCTrianProp->SetIsUp(true);
+					}
+					else
+					{
+						pCTrianProp->SetIsUp(false);
+					}
 
 					rtnVecModels.emplace_back(pModel);
 				}
@@ -334,20 +408,35 @@ std::vector<std::shared_ptr<C2DGenModel>> CScene2D::Generate(int winWight, int w
 
 		case 2:
 		{
-			int intType = mMath->GenerateRandomValueInRange((int)mRect, (int)mTriangle);
-			eModelType modType = static_cast<eModelType>(intType);
+			//int intType = mMath->GenerateRandomValueInRange((int)mRect, (int)mTriangle);
+
+			int intType = mMath->GenerateRandomValueInRange(0, 9);
+			eModelType modType = mRect;
+
+			if ((intType > 3) && (intType <= 6))
+				modType = mTriangle;
+			if (((intType > 6) && (intType <= 9)))
+				modType = mCycle;
+			//eModelType modType = static_cast<eModelType>(intType);
 
 			if (modType == mRect)
 			{
+				eModelType modType = mRect;
+
 				auto pRect = std::make_shared<CRect2D>(CPoint2D(0, 0), CPoint2D(50, 50), CColor3D(255, 0, 0));
 
 				std::vector<std::shared_ptr<CFigureBase>> InFigureModels;
 				InFigureModels.emplace_back(pRect);
 
 				auto pModel = std::make_shared<C2DGenModel>(modType, InFigureModels);
+				CPoint2D* CurPosXY = pModel->GetCurPositionXY();
+
+				int margin = 25 + 50;
+				CurPosXY->y = static_cast<float>(mMath->GenerateRandomValueInRange(25, winHeight - margin));
+
 				auto pRectProp = dynamic_cast<CProperty2DModel*>(pModel->GetProperty().get());
 
-				int speed = mMath->GenerateRandomValueInRange(2, m_MaxTrackObjSpeed);
+				int speed = mMath->GenerateRandomValueInRange(1, m_MaxTrackObjSpeed);
 				int timeAfter = mMath->GenerateRandomValueInRange(0, m_TimeAfter);
 
 				pRectProp->SetSpeed(speed);
@@ -366,9 +455,26 @@ std::vector<std::shared_ptr<C2DGenModel>> CScene2D::Generate(int winWight, int w
 
 				auto pModel = std::make_shared<C2DGenModel>(modType, InFigureModels);
 
+				CPoint2D* CurPosXY = pModel->GetCurPositionXY();
+
+				int margin = 25 + 50;
+				CurPosXY->y = static_cast<float>(mMath->GenerateRandomValueInRange(200, winHeight-200));//winHeight / 2;//
+
 				auto pCTrianProp = dynamic_cast<CTriangleProperty*>(pModel->GetProperty().get());
-				pCTrianProp->SetSpeed(5);
-				pCTrianProp->SetIsUp(true);
+
+				int speed = mMath->GenerateRandomValueInRange(1, m_MaxTrackObjSpeed);
+
+				pCTrianProp->SetSpeed(speed);
+
+				int IsBound = mMath->GenerateRandomValueInRange(1, 10);
+				if (IsBound < 5)
+				{
+					pCTrianProp->SetIsUp(true);
+				}
+				else
+				{
+					pCTrianProp->SetIsUp(false);
+				}
 
 				rtnVecModels.emplace_back(pModel);
 			}
@@ -382,12 +488,29 @@ std::vector<std::shared_ptr<C2DGenModel>> CScene2D::Generate(int winWight, int w
 				InFigureModels.emplace_back(pCycle);
 
 				auto pModel = std::make_shared<C2DGenModel>(modType, InFigureModels);
+
+				CPoint2D* CurPosXY = pModel->GetCurPositionXY();
+
+				int margin = 25 + 50;
+				CurPosXY->y = static_cast<float>(mMath->GenerateRandomValueInRange(200, winHeight - 200));// winHeight / 2;//mMath->GenerateRandomValueInRange(25, winHeight - margin);
+				
 				auto pCycleProp = dynamic_cast<CCycleProperty*>(pModel->GetProperty().get());
 
-				pCycleProp->SetSpeed(5);
-				pCycleProp->SetMoveAngel(75);
-				pCycleProp->SetIsRebound(false);
+				int speed = mMath->GenerateRandomValueInRange(2, m_MaxTrackObjSpeed);
+				pCycleProp->SetSpeed(speed);
+				
+				int angel = mMath->GenerateRandomValueInRange(30, 80);
+				pCycleProp->SetMoveAngel(angel);
 
+				int IsBound = mMath->GenerateRandomValueInRange(1, 10);
+				if (IsBound < 5)
+				{
+					pCycleProp->SetIsRebound(false);
+				}
+				else
+				{
+					pCycleProp->SetIsRebound(true);
+				}
 				rtnVecModels.emplace_back(pModel);
 			}
 

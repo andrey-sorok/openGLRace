@@ -20,6 +20,7 @@
 #include "MyMath.h"
 
 #include "C2DModel.h"
+#include <ProjManager.h>
 
 
 CMouse::CMouse()
@@ -80,7 +81,7 @@ void CMouse::MouseClick(int button, int state, int x, int y, bool& InIsMouseMove
 						std::vector<std::string> vPathToModelsFiles = pBinFile->ReadNamesFiles("Cars");
 						
 						pConditions->SetPaths2Models(vPathToModelsFiles);
-						int NumModels = vPathToModelsFiles.size();
+						int NumModels = static_cast<int>(vPathToModelsFiles.size());
 
 						//__
 						//NumModels = 1;
@@ -143,6 +144,7 @@ void CMouse::MouseClick(int button, int state, int x, int y, bool& InIsMouseMove
 							//pConditions->SetCurGameTime(30000);
 							pConditions->SetCurGameState(Game);
 
+							//m_ProjManager->m_GameTimer.reset();
 						}
 					}
 
@@ -151,15 +153,15 @@ void CMouse::MouseClick(int button, int state, int x, int y, bool& InIsMouseMove
 
 				case Redact:
 				{
-					bool IsSydebarClick = m_pScene2D->IsLeftSideBarClick(p.x, p.y);
+					bool IsSydebarClick = m_pScene2D->IsLeftSideBarClick(static_cast<int>(p.x), static_cast<int>(p.y));
 					if (IsSydebarClick)
 					{
-						EFigure curFigure = m_pScene2D->GetFigureClick(p.x, p.y);
+						EFigure curFigure = m_pScene2D->GetFigureClick(static_cast<int>(p.x), static_cast<int>(p.y));
 						if (curFigure != fNone)
 						{
 							pConditions->SetCurFigure(curFigure);
 						}
-						else if (m_pScene2D->ChecClickSaveAndExit(p.x, p.y))
+						else if (m_pScene2D->ChecClickSaveAndExit(static_cast<int>(p.x), static_cast<int>(p.y)))
 						{
 							//check connectivity
 							auto pMMath = std::make_unique<CMyMath>();
@@ -190,7 +192,7 @@ void CMouse::MouseClick(int button, int state, int x, int y, bool& InIsMouseMove
 
 							break;
 						}
-						else if (m_pScene2D->ChecClickSave(p.x, p.y))
+						else if (m_pScene2D->ChecClickSave(static_cast<int>(p.x), static_cast<int>(p.y)))
 						{
 							pConditions->SetCurGameState(StartMenu);
 							break;
@@ -206,7 +208,7 @@ void CMouse::MouseClick(int button, int state, int x, int y, bool& InIsMouseMove
 					{
 						auto pCoordTransf = std::make_unique<CCoordTransform>();
 						CPoint3D p = pCoordTransf->Win2ProjCoordinate(x, y);
-						if (!pMNGFigure->ClickedObj2D(p.x, p.y))
+						if (!pMNGFigure->ClickedObj2D(static_cast<int>(p.x), static_cast<int>(p.y)))
 							pMNGFigure->CreateNewFigure(x, y, pConditions->GetCurFigure());
 					}
 					else
@@ -239,6 +241,9 @@ void CMouse::MouseClick(int button, int state, int x, int y, bool& InIsMouseMove
 						pConditions->SetLeftRightUpBottom(left, right, up, down);
 						//pConditions->SetCurGameTime(30000);
 						pConditions->SetCurGameState(Game);
+
+						//m_ProjManager->ResetTimer();
+
 					}
 					
 					break;
@@ -296,7 +301,7 @@ void CMouse::MouseMotion(int x, int y, bool& InIsMouseMove)
 		InIsMouseMove = true;
 		auto pCoordTransf = std::make_unique<CCoordTransform>();
 		CPoint3D p = pCoordTransf->Win2ProjCoordinate(x, y);
-		pMNGFigure->SetNewCoord(true, p.x, p.y);
+		pMNGFigure->SetNewCoord(true, static_cast<int>(p.x), static_cast<int>(p.y));
 
 		glutPostRedisplay();
 	}

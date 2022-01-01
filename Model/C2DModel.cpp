@@ -41,8 +41,8 @@ C2DModel::C2DModel(eModelType InModelType, std::vector<std::shared_ptr<CFigureBa
 
 	auto modelCenter = CalcCenterModel(m_Objects2D);
 
-	m_CenterXY->x = modelCenter.first;
-	m_CenterXY->y = modelCenter.second;
+	m_CenterXY->x = static_cast<float>(modelCenter.first);
+	m_CenterXY->y = static_cast<float>(modelCenter.second);
 }
 
 void C2DModel::Add2Objects2D(std::shared_ptr<CFigureBase> InObj2D)
@@ -136,7 +136,7 @@ std::pair<void*, void*> C2DModel::GetVertexArr(std::shared_ptr<CFigureBase> InOb
 	std::list<CPoint2D*> lstPoints =  pRect->GetPoints();
 	CColor3D* color = pRect->GetColor();
 
-	int size = lstPoints.size();
+	int size = static_cast<int>(lstPoints.size());
 	for ( int iP = 0; iP < size; ++iP )
 	{
 		CPoint2D* p = lstPoints.front();
