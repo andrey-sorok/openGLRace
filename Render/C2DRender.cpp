@@ -37,7 +37,8 @@
 
 #include <chrono>
 
-
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb_image.h"
 
 void C2DRender::DrawCurrenFigure(EFigure InCurFigure, CColor3D InColor)
 {
@@ -90,6 +91,9 @@ void C2DRender::renderSpacedBitmapString(float x, float y, int spacing, void * f
 C2DRender::C2DRender()
 {
 	m_pScene2D = std::make_shared<CScene2D>();
+	IsFinisTrack1Load = false;
+
+	m_Tex = 0;
 }
 
 C2DRender::~C2DRender()
@@ -368,16 +372,20 @@ void C2DRender::DrawMoveTrack1(TrackState InState)
 
 				std::vector<std::shared_ptr<C2DGenModel>> CurTrack1Models = m_pScene2D->GetTrack1Models();
 				
-				std::vector<std::shared_ptr<C2DGenModel>> Track1Models = m_pScene2D->GenerateTrack1Models(pConditions->GetWINHEIGHT(),
-						pConditions->GetWINHEIGHT(), forple);
-				
-				CurTrack1Models.insert(CurTrack1Models.end(), Track1Models.begin(), Track1Models.end());
-				if (CurTrack1Models.size() > MaxCurLtrackObjects)
+				int CurTime = pConditions->GetCurGameTime();
+				if (CurTime > 0)
 				{
-					CurTrack1Models.resize(MaxCurLtrackObjects);
-					CurTrack1Models.shrink_to_fit();
-				}
+					std::vector<std::shared_ptr<C2DGenModel>> Track1Models = m_pScene2D->GenerateTrack1Models(pConditions->GetWINHEIGHT(),
+						pConditions->GetWINHEIGHT(), forple);
 
+					CurTrack1Models.insert(CurTrack1Models.end(), Track1Models.begin(), Track1Models.end());
+
+					if (CurTrack1Models.size() > MaxCurLtrackObjects)
+					{
+						CurTrack1Models.resize(MaxCurLtrackObjects);
+						CurTrack1Models.shrink_to_fit();
+					}
+				}
 				//If Track1 models intersect - change speed
 				for (auto iTrackModel : CurTrack1Models)
 				{
@@ -417,35 +425,6 @@ void C2DRender::DrawMoveTrack1(TrackState InState)
 											iTrackModel->GetProperty()->SetSpeed(m_pScene2D->GetMaxTrackObjSpeed());
 										}
 									}
-									//if ((iTrackModel->GetiP() == mTriangle) && (jTrackModel->GetiP() == mTriangle))
-									//{
-									//	auto Prop = iTrackModel->GetProperty();
-									//	auto pTrianProp1 = dynamic_cast<CTriangleProperty*>(Prop.get());
-									//	//pTrianProp1->SetIsUp(false);
-							
-
-									//	Prop = jTrackModel->GetProperty();	
-									//	auto pTrianProp2 = dynamic_cast<CTriangleProperty*>(Prop.get());
-									//	
-									//	if (pTrianProp1->GetIsUp() == pTrianProp2->GetIsUp())
-									//		pTrianProp1->SetIsUp(!pTrianProp1->GetIsUp());
-
-
-									//}
-									//if ((iTrackModel->GetiP() == mCycle) && (jTrackModel->GetiP() == mCycle))
-									//{
-									//	auto Prop = iTrackModel->GetProperty();
-									//	auto pCycleProp1 = dynamic_cast<CCycleProperty*>(Prop.get());
-									//	//pCycleProp1->SetIsRebound(false);
-
-									//	Prop = jTrackModel->GetProperty();
-									//	auto pCycleProp2 = dynamic_cast<CCycleProperty*>(Prop.get());
-									//	
-									//	if (pCycleProp1->GetIsRebound() == pCycleProp2->GetIsRebound())
-									//		pCycleProp1->SetIsRebound(!pCycleProp1->GetIsRebound());
-
-									//	//pCycleProp->SetIsRebound(true);
-									//}
 
 								}
 							}
@@ -651,6 +630,20 @@ void C2DRender::DrawAxes(CLine2D* inAbciss, CLine2D* inOrdinate)
 	glEnd();
 }
 
+void C2DRender::DrawTrack1FinishTexture(int wWidth, int wHight)
+{
+	glBegin(GL_QUADS);
+
+		glTexCoord2f(0, 0);  glVertex2f(wWidth - 250, wHight - 250);
+		glTexCoord2f(0, 1); glVertex2f(wWidth - 250, wHight + 250);
+
+		glTexCoord2f(1, 1); glVertex2f(wWidth + 250, wHight + 250);
+		glTexCoord2f(1, 0); glVertex2f(wWidth + 250, wHight - 250);
+
+	glEnd();
+
+}
+
 void C2DRender::DrawCircle(CColor3D * inColor, float cx, float cy, float r, int num_segments)
 {
 	glColor3f(static_cast<GLfloat>(inColor->R), static_cast<GLfloat>(inColor->G), static_cast<GLfloat>(inColor->B));
@@ -821,7 +814,7 @@ void C2DRender::DrawCarModelTrack1()
 	CPoint2D* offseXY = pCurModel->GetOffset();
 	int GameTime = pCondition->GetCurGameTime();
 
-	if (GameTime <= 0)
+	if ((GameTime <= 0)&(m_pScene2D->GetTrack1Models().size() == 0))
 	{
 		float offset = pCondition->GetOffset();		
 		pCurModel->SetOffset(fHorizontal, +offset);
@@ -845,6 +838,70 @@ void C2DRender::DrawCarModelTrack1()
 	}
 
 	glPopMatrix();
+
+	if (pCurPosition->x > pCondition->GetWINWIDTH())
+	{
+		auto pFinishModel =  m_pScene2D->GetTtrack1FinishModel();
+		auto pModel = pFinishModel.get();
+		if (!pModel)
+		{
+
+			auto pNewRect = std::make_shared<CRect2D>(CPoint2D(100, 100), CPoint2D(600, 600), CColor3D(255,255,255));
+			std::vector<std::shared_ptr<CFigureBase>> tmpModelVector;
+			tmpModelVector.emplace_back(pNewRect);
+
+			auto pModel = std::make_shared<C2DModel>(mRect, tmpModelVector);
+
+			m_pScene2D->SetTtrack1FinishModel(pModel);
+		}
+		else
+		{
+
+			if (IsFinisTrack1Load)
+			{
+				int wHight = pCondition->GetWINHEIGHT()/2;
+				int wWidth = pCondition->GetWINWIDTH()/2;
+
+				DrawTrack1FinishTexture(wWidth, wHight);
+			}
+
+			if (!IsFinisTrack1Load)
+			{
+				TCHAR buffer[MAX_PATH];
+				GetCurrentDirectory(sizeof(buffer), buffer);
+				std::string Path = buffer;
+				auto last = Path.find_last_of("\\", Path.length());
+
+				Path = Path.substr(0, last + 1);
+
+				Path += "Textures\\f.jpg";
+
+				const char *filename = &Path[0]; // path and filename
+				int         req_channels = 3; // 3 color channels of BMP-file   
+
+				int width, height, channels;
+				stbi_uc *image = stbi_load(filename, &width, &height, &channels, 0);
+
+				//GLuint texture_obj = 0;
+				if (image != nullptr)
+				{
+					glGenTextures(1, &m_Tex);
+					glBindTexture(GL_TEXTURE_2D, m_Tex);
+					glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+					glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+					//glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+					glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
+					glPixelStorei(GL_UNPACK_ALIGNMENT, 4); // default
+
+
+					stbi_image_free(image);
+				}
+				
+				IsFinisTrack1Load = true;
+			}
+		}
+	}
 	//End_DrawCarModel
 }
 
@@ -1243,7 +1300,7 @@ void C2DRender::CheckOuthOfViewObjectsTrack1()
 
 	int GameTime = pConditions->GetCurGameTime();
 
-	if (GameTime < 0)
+	/*if (GameTime < 0)
 	{
 		for (int iModel = 0; iModel < TrackModels.size(); ++iModel)
 		{
@@ -1256,41 +1313,41 @@ void C2DRender::CheckOuthOfViewObjectsTrack1()
 		m_pScene2D->SetTrack1Models(TrackModels);
 	}
 	else
+	{*/
+	int size = static_cast<int>(TrackModels.size());
+	for (int iModel = 0; iModel < TrackModels.size(); ++iModel)
 	{
-		int size = static_cast<int>(TrackModels.size());
-		for (int iModel = 0; iModel < TrackModels.size(); ++iModel)
+		auto pModel = TrackModels[iModel];
+
+		auto CurPosXY = pModel->GetCurPositionXY();
+
+		int offset = static_cast<int>(pConditions->GetCarOffset());
+		if (((pConditions->GetWINWIDTH()) + CurPosXY->x) < -offset)
 		{
-			auto pModel = TrackModels[iModel];
-
-			auto CurPosXY = pModel->GetCurPositionXY();
-
-			int offset = static_cast<int>(pConditions->GetCarOffset());
-			if (((pConditions->GetWINWIDTH()) + CurPosXY->x) < -offset)
-			{
-				bool IsUnique = pModel.unique();
-				TrackModels.erase(TrackModels.begin() + iModel);
-				pModel.reset();
-			}
-		}
-
-
-		if (size > TrackModels.size())
-		{
-			//bool IsGenerate = false;
-			//pConditions->SetIsGenerate(IsGenerate);
-			m_pScene2D->SetTrack1Models(TrackModels);
-		}
-		//if (TrackModels.empty())
-		if (pConditions->GetMaxTrackObj() > TrackModels.size())
-		{
-			bool IsGenerate = false;
-			pConditions->SetIsGenerate(IsGenerate);
+			bool IsUnique = pModel.unique();
+			TrackModels.erase(TrackModels.begin() + iModel);
+			pModel.reset();
 		}
 	}
+
+
+	if (size > TrackModels.size())
+	{
+		//bool IsGenerate = false;
+		//pConditions->SetIsGenerate(IsGenerate);
+		m_pScene2D->SetTrack1Models(TrackModels);
+	}
+	//if (TrackModels.empty())
+	if (pConditions->GetMaxTrackObj() > TrackModels.size())
+	{
+		bool IsGenerate = false;
+		pConditions->SetIsGenerate(IsGenerate);
+	}
+	//}
 	//ShootModels
 	auto pShootTrackModels = m_pScene2D->GetTtrack1ShootModels();
 
-	int size = static_cast<int>(pShootTrackModels.size());
+	size = static_cast<int>(pShootTrackModels.size());
 	for (int iModel = 0; iModel < pShootTrackModels.size(); ++iModel)
 	{
 		auto pModel = pShootTrackModels[iModel];

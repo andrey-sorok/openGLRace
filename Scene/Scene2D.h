@@ -40,6 +40,8 @@ private:
 
 	std::vector<std::shared_ptr<C2DModel>> m_Ttrack1ShootModels;
 
+	std::shared_ptr<C2DModel> m_Ttrack1FinishVodel;
+
 	int m_MaxTrackObjSpeed;
 	int m_TimeAfter;
 	
@@ -97,6 +99,9 @@ public:
 
 	void SetTrack1Models(std::vector<std::shared_ptr<C2DGenModel>> InTtrack1Models) { m_Ttrack1Models = InTtrack1Models; };
 	std::vector<std::shared_ptr<C2DGenModel>>& GetTrack1Models() { return m_Ttrack1Models; };
+
+	void SetTtrack1FinishModel(std::shared_ptr<C2DModel> InTtrack1FinishModel) { m_Ttrack1FinishVodel = InTtrack1FinishModel; };
+	std::shared_ptr<C2DModel> GetTtrack1FinishModel() { return m_Ttrack1FinishVodel; };
 
 	int GetMaxTrackObjSpeed() { return m_MaxTrackObjSpeed; };
 

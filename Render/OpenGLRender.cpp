@@ -1,9 +1,12 @@
 #include "OpenGLRender.h"
 
-#include <gl\freeglut.h>
+#include <iostream>
+#include <cstdio>
+#include <fstream>
 
 COpenGLRender::COpenGLRender()
 {
+	m_PathToTextures = "Textures";
 }
 
 COpenGLRender::~COpenGLRender()
@@ -30,6 +33,10 @@ void COpenGLRender::InitWindowParams(const int window_width, const int window_he
 void COpenGLRender::Init(int WINWIDTH, int WINHEIGHT)
 {
 	glClear(GL_COLOR_BUFFER_BIT);
+
+
+	glEnable(GL_TEXTURE_2D);
+
 	glClearColor(static_cast<GLclampf>(0.0), static_cast<GLclampf>(0.2), static_cast<GLclampf>(0.5), static_cast<GLclampf>(0.00));
 
 	glMatrixMode(GL_PROJECTION);

@@ -32,8 +32,8 @@ CCondition::CCondition()
 	m_RectForCarInTrack.lengthX = 100;
 	m_RectForCarInTrack.lengthY = 100;
 
-	m_FirstLevelTime = 10000;
-	m_CurGameTime = 10000;
+	m_FirstLevelTime = 30000;
+	m_CurGameTime = 30000;
 	m_NumTrackIntervals = 3;
 	m_IntervalLength = m_CurGameTime / m_NumTrackIntervals;
 	m_MaxTrackObj = 5;
