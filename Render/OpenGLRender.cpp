@@ -29,6 +29,7 @@ void COpenGLRender::InitWindowParams(const int window_width, const int window_he
 
 void COpenGLRender::Init(int WINWIDTH, int WINHEIGHT)
 {
+
 	glClear(GL_COLOR_BUFFER_BIT);
 	glClearColor(0.0, 0.2, 0.5, 0);
 
