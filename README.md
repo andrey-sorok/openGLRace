@@ -12,3 +12,8 @@ In third, add yellow cycles - move at an angle and bounce off edges with differe
 <img src="https://github.com/andrey-sorok/openGLRace/blob/Race_2/Textures/III.jpg" height="250" width="400" >
 
 <img src="https://github.com/andrey-sorok/openGLRace/blob/Race_2/Textures/IV.jpg" height="250" width="400" >
+
+This app OOP used presented on image below.
+(add soon)
+
+<img src="https://github.com/andrey-sorok/openGLRace/blob/Race_2/Textures/oop.jpg" height="250" width="400" >
